@@ -1,0 +1,196 @@
+% Created 2022-04-12 Tue 00:47
+% Intended LaTeX compiler: pdflatex
+\documentclass[titlepage,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{a4wide}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{minted}
+\usepackage{svg}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{TP2 - Grupo 1}
+\fancyhead[R]{Teoria de Algoritmos I - FIUBA}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyfoot[C]{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+\usemintedstyle{stata-light}
+\newminted{c}{bgcolor={rgb}{0.95,0.95,0.95}}
+\author{Pablo Andres Dealbera}
+\date{\today}
+\title{}
+\begin{document}
+
+\begin{titlepage}
+	\hfill\includegraphics[width=6cm]{assets/logofiuba.jpg}
+    \centering
+    \vfill
+    \Huge \textbf{Trabajo Práctico 2 — Algoritmos D\&C y Programacion Dinamica}
+    \vskip2cm
+    \Large [75.29/95.06] Teoria de Algoritmos I\\
+    Primer cuatrimestre de 2022\\
+    \vfill
+    \begin{tabular}{ | l | l | l | }
+      \hline
+      Alumno & Padron & Email \\ \hline
+      BENITO, Agustin & 108100 & abenito@fi.uba.ar \\ \hline
+      BLÁZQUEZ, Sebastián & 99673 & sblazquez@fi.uba.ar \\ \hline
+      DEALBERA, Pablo Andres & 106585 & pdealbera@fi.uba.ar \\ \hline
+      DUARTE, Luciano & 105604 & lduarte@fi.uba.ar \\ \hline
+      PICCO, Martín & 99289 & mpicco@fi.uba.ar \\ \hline
+  	\end{tabular}
+    \vfill
+    \begin{tabular}{ | l | l | }
+      \hline
+      Entrega: & Primera \\ \hline
+      Fecha: & Miercoles 27 de Abril del 2022 \\ \hline
+  	\end{tabular}
+    \vfill
+    \vfill
+\end{titlepage}
+\tableofcontents
+\newpage
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+\section{Parte 1: Un evento exclusivo}
+\label{sec:org8d65ed6}
+Todos los años la asociación de un importante deporte individual profesional realiza una preclasificación de los n jugadores que terminaron en las mejores posiciones del ranking para un evento exclusivo. En la tarjeta de invitación que enviarán suelen adjuntar el número de posición en la que está actualmente y a cuantos rivales superó en el ranking (únicamente entre los invitados). Contamos con un listado que tiene el nombre del jugador y la posición del ranking del año pasado. Ese listado está ordenado por el ranking actual.
+
+Ejemplo:
+
+\begin{verbatim}
+A,3 | B,4 | C,2 | D,8 | E,6 | F,5 |
+
+A → Ranking actual 1 → superó a 1 entre los preclasificados (C)
+B → Ranking actual 2 → superó a 1 entre los preclasificados (C)
+C → Ranking actual 3 → superó a 0 entre los preclasificados (-)
+D → Ranking actual 4 → superó a 2 entre los preclasificados (E y F)
+E → Ranking actual 5 → superó a 1 entre los preclasificados (F)
+F → Ranking actual 6 → superó a 0 entre los preclasificados (-)
+\end{verbatim}
+
+En este caso el problema debería retornar:
+
+\begin{verbatim}
+A → 1 (1)
+B → 2 (1)
+C → 3 (0)
+D → 4 (2)
+E → 5 (1)
+F → 6 (0)
+\end{verbatim}
+
+Se pide:
+
+\begin{itemize}
+\item Explicar cómo se puede resolver este problema por fuerza bruta. Analizar complejidad espacial y temporal de esta solución
+
+\item Proponer una solución utilizando la metodología de división y conquista que sea más eficiente que la propuesta anterior. (incluya pseudocódigo y explicación)
+
+\item Realizar el análisis de complejidad temporal mediante el uso del teorema maestro.
+
+\item Realizar el análisis de complejidad temporal desenrollando la recurrencia
+
+\item Analizar la complejidad espacial basándose en el pseudocódigo.
+
+\item Dar un ejemplo completo del funcionamiento de su solución
+\end{itemize}
+
+\section{Parte 2: Ciclos negativos}
+\label{sec:org14635cf}
+
+La detección de ciclos negativos tiene una variedad de aplicaciones en varios campos. Por ejemplo en el diseño de circuitos electrónicos VLSI, se requiere aislar los bucles de retroalimentación negativa. Estos corresponden a ciclos de costo negativo en el grafo de ganancia del amplificador del circuito. Tomando como entrada de nuestro problema un grafo ponderado con valores enteros (positivos y/o negativos) dirigido donde un nodo corresponde al punto de partida, queremos conocer si existe al menos un ciclo negativo y en caso afirmativo mostrarlo en pantalla.
+
+Se pide:
+
+\begin{itemize}
+\item Proponer una solución al problema que utiliza programación dinámica. Incluya relación de recurrencia, pseudocódigo, estructuras de datos utilizadas y explicación en prosa.
+
+\item Analice la complejidad temporal y espacial de su propuesta.
+
+\item Programe la solución
+
+\item Determine si su programa tiene la misma complejidad que su propuesta teórica.
+\end{itemize}
+
+Formato de los archivos:
+
+El programa debe recibir por parámetro el path del archivo donde se encuentra el grafo. El archivo con el grafo es un archivo de texto donde la primera línea corresponde al nodo inicial. Luego continúa con una línea por cada eje direccionado del grafo con el formato: ORIGEN,DESTINO,PESO.
+
+Ejemplo: “grafo.txt”
+
+\begin{verbatim}
+B
+D,A,-2
+B,A,3
+D,C,2
+C,D,-1
+B,E,2
+E,D,-2
+A,E,3
+...
+\end{verbatim}
+
+Debe resolver el problema y retornar por pantalla la solución.
+
+En caso de no existir ciclos negativos: “No existen ciclos negativos en el grafo”
+
+En caso de existir ciclos negativos: “Existe al menos un ciclo negativo en el grafo. A,E,D → costo: -1”
+
+
+\subsection{Detalles de implementación}
+\label{sec:org7067418}
+
+El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
+instalado cualquier versión de \texttt{python3}.
+
+\subsubsection{Ejecución del programa}
+\label{sec:orgbe475bd}
+
+El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
+siguiente forma:
+
+\begin{minted}[]{bash}
+./src/parte_2.py
+\end{minted}
+
+El comprimido entregado incluye un carpeta de \texttt{assets/grafos} con grafos ejemplos,
+por ejemplo:
+
+\begin{minted}[]{bash}
+./src/tp1.py ./assets/grafos/grafo.txt
+\end{minted}
+\section{Parte 3: Un poco de teoría}
+\label{sec:org2b9a059}
+
+\begin{enumerate}
+\item Hasta el momento hemos visto 3 formas distintas de resolver problemas. Greedy, división y conquista y programación dinámica.
+
+\begin{enumerate}
+\item Describa brevemente en qué consiste cada una de ellas
+
+\item ¿Cuál es la mejor de las 3? ¿Podría elegir una técnica sobre las otras?
+\end{enumerate}
+
+\item Un determinado problema puede ser resuelto tanto por un algoritmo Greedy, como por un algoritmo de División y Conquista. El algoritmo greedy realiza N\textsuperscript{3} operaciones sobre una matriz, mientras que el algoritmo de Programación Dinámica realiza N\textsuperscript{2} operaciones en total, pero divide el problema en N\textsuperscript{2} subproblemas a su vez, los cuales debe ir almacenando mientras se ejecuta el algoritmo. Teniendo en cuenta los recursos computacionales involucrados (CPU, memoria, disco) ¿Qué algoritmo elegiría para resolver el problema y por qué?
+\end{enumerate}
+
+Pista: probablemente no haya una respuesta correcta para este problema, solo justificaciones correctas
+\end{document}
