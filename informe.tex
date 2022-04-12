@@ -1,4 +1,4 @@
-% Created 2022-04-12 Tue 00:47
+% Created 2022-04-12 Tue 13:40
 % Intended LaTeX compiler: pdflatex
 \documentclass[titlepage,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -70,7 +70,7 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \section{Parte 1: Un evento exclusivo}
-\label{sec:org8d65ed6}
+\label{sec:orgcfd7d52}
 Todos los años la asociación de un importante deporte individual profesional realiza una preclasificación de los n jugadores que terminaron en las mejores posiciones del ranking para un evento exclusivo. En la tarjeta de invitación que enviarán suelen adjuntar el número de posición en la que está actualmente y a cuantos rivales superó en el ranking (únicamente entre los invitados). Contamos con un listado que tiene el nombre del jugador y la posición del ranking del año pasado. Ese listado está ordenado por el ranking actual.
 
 Ejemplo:
@@ -114,7 +114,7 @@ Se pide:
 \end{itemize}
 
 \section{Parte 2: Ciclos negativos}
-\label{sec:org14635cf}
+\label{sec:org64dc170}
 
 La detección de ciclos negativos tiene una variedad de aplicaciones en varios campos. Por ejemplo en el diseño de circuitos electrónicos VLSI, se requiere aislar los bucles de retroalimentación negativa. Estos corresponden a ciclos de costo negativo en el grafo de ganancia del amplificador del circuito. Tomando como entrada de nuestro problema un grafo ponderado con valores enteros (positivos y/o negativos) dirigido donde un nodo corresponde al punto de partida, queremos conocer si existe al menos un ciclo negativo y en caso afirmativo mostrarlo en pantalla.
 
@@ -156,29 +156,34 @@ En caso de existir ciclos negativos: “Existe al menos un ciclo negativo en el 
 
 
 \subsection{Detalles de implementación}
-\label{sec:org7067418}
+\label{sec:orga679c3b}
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
 instalado cualquier versión de \texttt{python3}.
 
 \subsubsection{Ejecución del programa}
-\label{sec:orgbe475bd}
+\label{sec:org75f3cdd}
 
 El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
 siguiente forma:
 
 \begin{minted}[]{bash}
-./src/parte_2.py
+./src/parte_2.py <filename>
 \end{minted}
 
-El comprimido entregado incluye un carpeta de \texttt{assets/grafos} con grafos ejemplos,
+El comprimido entregado incluye un archivo ejemplo en \texttt{assets/grafo.txt} con grafos ejemplos,
 por ejemplo:
 
 \begin{minted}[]{bash}
-./src/tp1.py ./assets/grafos/grafo.txt
+./src/parte_2.py ./assets/grafo.txt
 \end{minted}
+
+\begin{verbatim}
+Graph({'D': {'A': '-2', 'C': '2'}, 'B': {'A': '3', 'E': '2'}, 'C': {'D': '-1'}, 'E': {'D': '-2'}, 'A': {'E': '3'}})
+\end{verbatim}
+
 \section{Parte 3: Un poco de teoría}
-\label{sec:org2b9a059}
+\label{sec:org10ba1fc}
 
 \begin{enumerate}
 \item Hasta el momento hemos visto 3 formas distintas de resolver problemas. Greedy, división y conquista y programación dinámica.

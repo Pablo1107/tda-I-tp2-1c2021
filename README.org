@@ -97,15 +97,20 @@ El programa contiene un ~shebang~ para ser ejecutado en una terminal de la
 siguiente forma:
 
 #+begin_src bash :results raw
-./src/parte_2.py
+./src/parte_2.py <filename>
 #+end_src
 
-El comprimido entregado incluye un carpeta de ~assets/grafos~ con grafos ejemplos,
+El comprimido entregado incluye un archivo ejemplo en ~assets/grafo.txt~ con grafos ejemplos,
 por ejemplo:
 
 #+begin_src bash :results raw
-./src/tp1.py ./assets/grafos/grafo.txt
+./src/parte_2.py ./assets/grafo.txt
 #+end_src
+
+#+begin_src
+Graph({'D': {'A': '-2', 'C': '2'}, 'B': {'A': '3', 'E': '2'}, 'C': {'D': '-1'}, 'E': {'D': '-2'}, 'A': {'E': '3'}})
+#+end_src
+
 * Parte 3: Un poco de teoría
 
 1. Hasta el momento hemos visto 3 formas distintas de resolver problemas. Greedy, división y conquista y programación dinámica.
