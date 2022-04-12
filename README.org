@@ -49,7 +49,11 @@ La detección de ciclos negativos tiene una variedad de aplicaciones en varios c
 
 Se pide:
 
-  - Proponer una solución al problema que utiliza programación dinámica. Incluya relación de recurrencia, pseudocódigo, estructuras de datos utilizadas y explicación en prosa.
+  - Proponer una solución al problema que utiliza programación dinámica.
+    Incluya:
+     - relación de recurrencia
+     - pseudocódigo
+     - estructuras de datos utilizadas y explicación en prosa.
 
   - Analice la complejidad temporal y espacial de su propuesta.
 
