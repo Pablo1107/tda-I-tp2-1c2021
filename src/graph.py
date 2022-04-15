@@ -1,8 +1,9 @@
 class Grafo():
-    def __init__(self, es_dirigido = False, es_pesado = False):
+    def __init__(self, raiz, es_dirigido = False, es_pesado = False):
         self.vertices = dict()
         self.es_dirigido = es_dirigido
         self.es_pesado = es_pesado
+        self.raiz = raiz
 
     def __len__(self):
         return len(self.vertices)
@@ -68,7 +69,7 @@ class Grafo():
             return None
         if destino not in self.vertices[origen].keys():
             return None
-        return self.vertices[origen][destino]
+        return int(self.vertices[origen][destino])
 
     def __str__(self):
         return '{}({})'.format(self.__class__.__name__, dict(self.vertices))
@@ -77,13 +78,16 @@ def obterner_aristas(grafo):                             # O(V + E)
     aristas = []
     for v in grafo.obtener_vertices():
         for w in grafo.obtener_adyacentes(v):
-            aristas.append(v, w, grafo.peso(v, w))
+            aristas.append((v, w, grafo.peso(v, w)))
     return aristas
 
 def Bellman_Ford(grafo, origen):
     dist = {}
     padres = {}
+    ciclo = []
+    peso_ciclo = 0
     for v in grafo.obtener_vertices():                   # O(V)
+                   # O(V)
         dist[v] = float("inf") 
     dist[origen] = 0
     padres[origen] = None
@@ -100,8 +104,11 @@ def Bellman_Ford(grafo, origen):
             return padres, dist              # ya convergio       
 
     for v, w, peso in aristas:               # Se hace una iteracion mas
-        if dist[v] + peso < dist[w]:         # Si hay un cambio mas significa que
-            return None                      # Hay un ciclo negativo
+        if dist[v] + peso < dist[w]:
+            while padres.get(w):
+                ciclo.append(padres.pop(w))
+                peso_ciclo += peso
+            return ciclo                      # Hay un ciclo negativo       # Si hay un cambio mas significa que
 
     return padres, dist               # Total O(V) + O(V + E) + O(V * E) = O(V * E)
 
