@@ -74,36 +74,36 @@ class Grafo():
         return '{}({})'.format(self.__class__.__name__, dict(self.vertices))
 
 def obterner_aristas(grafo):                             # O(V + E)
-	aristas = []
-	for v in grafo.obtener_vertices():
-		for w in grafo.obtener_adyacentes(v):
-			aristas.append(v, w, grafo.peso(v, w))
-	return aristas
+    aristas = []
+    for v in grafo.obtener_vertices():
+        for w in grafo.obtener_adyacentes(v):
+            aristas.append(v, w, grafo.peso(v, w))
+    return aristas
 
 def Bellman_Ford(grafo, origen):
-	dist = {}
-	padres = {}
-	for v in grafo.obtener_vertices():                   # O(V)
-		dist[v] = float("inf") 
-	dist[origen] = 0
-	padres[origen] = None
-	aristas = obterner_aristas(grafo)                    # O(V + E)
-	for i in range(len(grafo.obtener_vertices())):       # O(V * E)
-		cambio = False
-		for v, w, peso in aristas:
-			if dist[v] + peso < dist[w]:
-				cambio = True
-				padres[w] = v
-				dist[w] = dist[v] + peso
+    dist = {}
+    padres = {}
+    for v in grafo.obtener_vertices():                   # O(V)
+        dist[v] = float("inf") 
+    dist[origen] = 0
+    padres[origen] = None
+    aristas = obterner_aristas(grafo)                    # O(V + E)
+    for i in range(len(grafo.obtener_vertices())):       # O(V * E)
+        cambio = False
+        for v, w, peso in aristas:
+            if dist[v] + peso < dist[w]:
+                cambio = True
+                padres[w] = v
+                dist[w] = dist[v] + peso
 
-		if not cambio:                       # Si no cmabia en toda una pasada
-			return padres, dist              # ya convergio       
+        if not cambio:                       # Si no cmabia en toda una pasada
+            return padres, dist              # ya convergio       
 
-	for v, w, peso in aristas:               # Se hace una iteracion mas
-		if dist[v] + peso < dist[w]:         # Si hay un cambio mas significa que
-			return None                      # Hay un ciclo negativo
+    for v, w, peso in aristas:               # Se hace una iteracion mas
+        if dist[v] + peso < dist[w]:         # Si hay un cambio mas significa que
+            return None                      # Hay un ciclo negativo
 
-	return padres, dist               # Total O(V) + O(V + E) + O(V * E) = O(V * E)
+    return padres, dist               # Total O(V) + O(V + E) + O(V * E) = O(V * E)
 
 # Este algoritmo sirve cuando hay aristas negativas
 # Esto sirve para todos los grafos, pero como tarda mucho mas que Dijkstra no se usa
