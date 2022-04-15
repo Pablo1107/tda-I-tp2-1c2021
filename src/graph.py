@@ -70,6 +70,8 @@ class Grafo():
             return None
         return self.vertices[origen][destino]
 
+    def __str__(self):
+        return '{}({})'.format(self.__class__.__name__, dict(self.vertices))
 
 def obterner_aristas(grafo):                             # O(V + E)
 	aristas = []
