@@ -16,9 +16,9 @@ class Grafo():
 
     def agregar_arista(self, origen, destino, peso = 1):
         if origen not in self.vertices.keys():
-            self.agregar_vertice(self, origen)
+            self.agregar_vertice(origen)
         if destino not in self.vertices.keys():
-            self.agregar_vertice(self, destino)
+            self.agregar_vertice(destino)
 
         ady = self.vertices.get(origen)
         ady[destino] = peso
