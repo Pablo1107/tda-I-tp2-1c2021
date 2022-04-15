@@ -104,11 +104,6 @@ def Bellman_Ford(grafo, origen):
 
     for v, w, peso in aristas:               # Se hace una iteracion mas
         if dist[v] + peso < dist[w]:
-            from pprint import pprint
-
-            print('v: ', v)
-            print('w: ', w)
-
             ciclo.append(v)
             arista_actual = v
             padre = padres[v]
@@ -121,7 +116,7 @@ def Bellman_Ford(grafo, origen):
                 peso_actual = grafo.peso(padre, arista_actual)
                 peso_ciclo += peso_actual
 
-            return ciclo, peso_ciclo
+            return ciclo[::-1], peso_ciclo
 
     return None
 
