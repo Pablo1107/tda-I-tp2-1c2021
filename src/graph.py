@@ -87,7 +87,6 @@ def Bellman_Ford(grafo, origen):
     ciclo = []
     peso_ciclo = 0
     for v in grafo.obtener_vertices():                   # O(V)
-                   # O(V)
         dist[v] = float("inf") 
     dist[origen] = 0
     padres[origen] = None
@@ -101,16 +100,30 @@ def Bellman_Ford(grafo, origen):
                 dist[w] = dist[v] + peso
 
         if not cambio:                       # Si no cmabia en toda una pasada
-            return padres, dist              # ya convergio       
+            return None
 
     for v, w, peso in aristas:               # Se hace una iteracion mas
         if dist[v] + peso < dist[w]:
-            while padres.get(w):
-                ciclo.append(padres.pop(w))
-                peso_ciclo += peso
-            return ciclo                      # Hay un ciclo negativo       # Si hay un cambio mas significa que
+            from pprint import pprint
 
-    return padres, dist               # Total O(V) + O(V + E) + O(V * E) = O(V * E)
+            print('v: ', v)
+            print('w: ', w)
+
+            ciclo.append(v)
+            arista_actual = v
+            padre = padres[v]
+            peso_ciclo = grafo.peso(padre, arista_actual)
+
+            while padre != v:
+                ciclo.append(padre)
+                arista_actual = padre
+                padre = padres[padre]
+                peso_actual = grafo.peso(padre, arista_actual)
+                peso_ciclo += peso_actual
+
+            return ciclo, peso_ciclo
+
+    return None
 
 # Este algoritmo sirve cuando hay aristas negativas
 # Esto sirve para todos los grafos, pero como tarda mucho mas que Dijkstra no se usa

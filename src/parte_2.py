@@ -20,9 +20,14 @@ def leer_grafo(nombre_fichero):
 
 def main(nombre_fichero):
     grafo = leer_grafo(nombre_fichero)
-    print(grafo)
-    rest = Bellman_Ford(grafo, grafo.raiz)
-    print(rest)
+    # print(grafo)
+    res = Bellman_Ford(grafo, grafo.raiz)
+    if res:
+        ciclos, costo = res
+        ciclos = ','.join(ciclos)
+        print(f'Existen al menos un ciclo negativo en el grafo. {ciclos} → costo: {costo}')
+    else: 
+        print('No existen ciclos negativos en el grafo')
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
