@@ -1,4 +1,4 @@
-% Created 2022-04-12 Tue 13:40
+% Created 2022-04-17 Sun 01:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[titlepage,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -70,99 +70,100 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \section{Parte 1: Un evento exclusivo}
-\label{sec:orgcfd7d52}
-Todos los años la asociación de un importante deporte individual profesional realiza una preclasificación de los n jugadores que terminaron en las mejores posiciones del ranking para un evento exclusivo. En la tarjeta de invitación que enviarán suelen adjuntar el número de posición en la que está actualmente y a cuantos rivales superó en el ranking (únicamente entre los invitados). Contamos con un listado que tiene el nombre del jugador y la posición del ranking del año pasado. Ese listado está ordenado por el ranking actual.
-
-Ejemplo:
-
-\begin{verbatim}
-A,3 | B,4 | C,2 | D,8 | E,6 | F,5 |
-
-A → Ranking actual 1 → superó a 1 entre los preclasificados (C)
-B → Ranking actual 2 → superó a 1 entre los preclasificados (C)
-C → Ranking actual 3 → superó a 0 entre los preclasificados (-)
-D → Ranking actual 4 → superó a 2 entre los preclasificados (E y F)
-E → Ranking actual 5 → superó a 1 entre los preclasificados (F)
-F → Ranking actual 6 → superó a 0 entre los preclasificados (-)
-\end{verbatim}
-
-En este caso el problema debería retornar:
-
-\begin{verbatim}
-A → 1 (1)
-B → 2 (1)
-C → 3 (0)
-D → 4 (2)
-E → 5 (1)
-F → 6 (0)
-\end{verbatim}
-
-Se pide:
-
-\begin{itemize}
-\item Explicar cómo se puede resolver este problema por fuerza bruta. Analizar complejidad espacial y temporal de esta solución
-
-\item Proponer una solución utilizando la metodología de división y conquista que sea más eficiente que la propuesta anterior. (incluya pseudocódigo y explicación)
-
-\item Realizar el análisis de complejidad temporal mediante el uso del teorema maestro.
-
-\item Realizar el análisis de complejidad temporal desenrollando la recurrencia
-
-\item Analizar la complejidad espacial basándose en el pseudocódigo.
-
-\item Dar un ejemplo completo del funcionamiento de su solución
-\end{itemize}
+\label{sec:org1041007}
 
 \section{Parte 2: Ciclos negativos}
-\label{sec:org64dc170}
+\label{sec:orgcfff3dd}
 
-La detección de ciclos negativos tiene una variedad de aplicaciones en varios campos. Por ejemplo en el diseño de circuitos electrónicos VLSI, se requiere aislar los bucles de retroalimentación negativa. Estos corresponden a ciclos de costo negativo en el grafo de ganancia del amplificador del circuito. Tomando como entrada de nuestro problema un grafo ponderado con valores enteros (positivos y/o negativos) dirigido donde un nodo corresponde al punto de partida, queremos conocer si existe al menos un ciclo negativo y en caso afirmativo mostrarlo en pantalla.
+\subsection{Algoritmo de Bellman-Ford}
+\label{sec:org42036ff}
 
-Se pide:
+El algoritmo de Bellman-Ford es de tipo programacion dinamica y genera el camino
+mas corto en un grafo dirigido ponderado a partir de un nodo origen y a
+diferencia de Dijkstra permite hacerlo con grafos que tienen aristas con pesos
+negativos y detecta ciclos negativos.
 
+Este algoritmo se puede describir como los siguientes pasos:
+
+\begin{enumerate}
+\item Iniciamos:
 \begin{itemize}
-\item Proponer una solución al problema que utiliza programación dinámica. Incluya relación de recurrencia, pseudocódigo, estructuras de datos utilizadas y explicación en prosa.
+\item un diccionario de distancias con clave \texttt{nodo/vertice} y valor infinito.
+\item un diccionario de predecesores con clave \texttt{nodo/vertice} y valor nulo.
+\item la distancia de clave \texttt{nodo\_origen} se cambia a 0.
+\end{itemize}
+\item Iterar por la cantidad de nodos del grafo:
+\begin{itemize}
+\item por cada arista, si la distancia guardada para llegar al origen de la
+arista mas el peso de moverse al nodo destino de la arista es menor a la
+distancia guardada para llegar al nodo destino de la arista, reemplazar la
+distancia guardada del nodo destino.
+\end{itemize}
+\item Verificar que no haya ciclos negativos
+\begin{itemize}
+\item por cada arista, si se sigue cumpliendo la condición del punto anterior,
+entonces hay un ciclo negativo
+\end{itemize}
+\end{enumerate}
 
-\item Analice la complejidad temporal y espacial de su propuesta.
 
-\item Programe la solución
+\subsubsection{Relación de Recurrencia}
+\label{sec:orgcb0350c}
 
-\item Determine si su programa tiene la misma complejidad que su propuesta teórica.
+Definiendo:
+\begin{itemize}
+\item \(s\): nodo origen o \emph{source node}
+\item \(n_i\): otro nodo distinto al origen
+\item \(j\): longitud maxima para llegar de \(s\) a \(n_i\)
+\item \(minPath(n_i, j)\): función recursiva para llegar al camino mínimo de \(s\) a \(n_i\)
+\item \(n_x\): predecesores a \(n_i\)
+\item \(w(n_x,n_i)\): peso de la arista \(n_x\) y \(n_i\)
 \end{itemize}
 
-Formato de los archivos:
+$$minPath(S, j) = 0$$
+$$minPath(n_i, 0) = +\infty\ \text{con}\ n_i \neq S$$
+$$
+minPath(n_i, j) = min \left\{ \begin{array}{lcc}
+             minPath(n_i, j-1) \\
+             min\ \{\ minPath(n_x, j-1) + w(n_x,n_i)\ \}
+             \end{array}
+   \right \}
+$$
 
-El programa debe recibir por parámetro el path del archivo donde se encuentra el grafo. El archivo con el grafo es un archivo de texto donde la primera línea corresponde al nodo inicial. Luego continúa con una línea por cada eje direccionado del grafo con el formato: ORIGEN,DESTINO,PESO.
+\subsubsection{Pseudo-codigo}
+\label{sec:org68d106f}
 
-Ejemplo: “grafo.txt”
 
 \begin{verbatim}
-B
-D,A,-2
-B,A,3
-D,C,2
-C,D,-1
-B,E,2
-E,D,-2
-A,E,3
-...
+funcion Bellman_Ford(Grafo grafo, Nodo origen)
+    siendo distancias un diccionario
+    siendo predecesores un diccionario
+
+    por cada vertice v del grafo:
+        distancias[v] = infinito
+
+    distancias[origen] = 0
+    padres[origen] = None
+
+    por cada vertice:
+        por cada arista de origen v y destino w y peso:
+            si distancias[v] + peso < distancias[w]:
+                predecesores[w] = v
+                distancias[w] = distintas[v] + peso
+
+    por cada arista de origen v y destino w y peso:
+        si distancias[v] + peso < distancias[w]:
+            tirar error "Hay un ciclo negativo"
 \end{verbatim}
 
-Debe resolver el problema y retornar por pantalla la solución.
-
-En caso de no existir ciclos negativos: “No existen ciclos negativos en el grafo”
-
-En caso de existir ciclos negativos: “Existe al menos un ciclo negativo en el grafo. A,E,D → costo: -1”
-
-
 \subsection{Detalles de implementación}
-\label{sec:orga679c3b}
+\label{sec:org00f3d41}
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
 instalado cualquier versión de \texttt{python3}.
 
 \subsubsection{Ejecución del programa}
-\label{sec:org75f3cdd}
+\label{sec:org950b3e5}
 
 El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
 siguiente forma:
@@ -174,28 +175,25 @@ siguiente forma:
 El comprimido entregado incluye un archivo ejemplo en \texttt{assets/grafo.txt} con grafos ejemplos,
 por ejemplo:
 
+\begin{verbatim}
+B
+D,A,-2
+B,A,3
+D,C,2
+C,D,-1
+B,E,2
+E,D,-2
+A,E,3
+\end{verbatim}
+
 \begin{minted}[]{bash}
 ./src/parte_2.py ./assets/grafo.txt
 \end{minted}
 
 \begin{verbatim}
-Graph({'D': {'A': '-2', 'C': '2'}, 'B': {'A': '3', 'E': '2'}, 'C': {'D': '-1'}, 'E': {'D': '-2'}, 'A': {'E': '3'}})
+Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 \end{verbatim}
 
 \section{Parte 3: Un poco de teoría}
-\label{sec:org10ba1fc}
-
-\begin{enumerate}
-\item Hasta el momento hemos visto 3 formas distintas de resolver problemas. Greedy, división y conquista y programación dinámica.
-
-\begin{enumerate}
-\item Describa brevemente en qué consiste cada una de ellas
-
-\item ¿Cuál es la mejor de las 3? ¿Podría elegir una técnica sobre las otras?
-\end{enumerate}
-
-\item Un determinado problema puede ser resuelto tanto por un algoritmo Greedy, como por un algoritmo de División y Conquista. El algoritmo greedy realiza N\textsuperscript{3} operaciones sobre una matriz, mientras que el algoritmo de Programación Dinámica realiza N\textsuperscript{2} operaciones en total, pero divide el problema en N\textsuperscript{2} subproblemas a su vez, los cuales debe ir almacenando mientras se ejecuta el algoritmo. Teniendo en cuenta los recursos computacionales involucrados (CPU, memoria, disco) ¿Qué algoritmo elegiría para resolver el problema y por qué?
-\end{enumerate}
-
-Pista: probablemente no haya una respuesta correcta para este problema, solo justificaciones correctas
+\label{sec:orgc10b237}
 \end{document}

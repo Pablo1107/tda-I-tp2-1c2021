@@ -63,6 +63,7 @@
 #+END_EXPORT
 
 * Parte 1: Un evento exclusivo
+** Consigna :noexport:
 Todos los años la asociación de un importante deporte individual profesional realiza una preclasificación de los n jugadores que terminaron en las mejores posiciones del ranking para un evento exclusivo. En la tarjeta de invitación que enviarán suelen adjuntar el número de posición en la que está actualmente y a cuantos rivales superó en el ranking (únicamente entre los invitados). Contamos con un listado que tiene el nombre del jugador y la posición del ranking del año pasado. Ese listado está ordenado por el ranking actual.
 
 Ejemplo:
@@ -105,6 +106,8 @@ Se pide:
 
 * Parte 2: Ciclos negativos
 
+** Consigna :noexport:
+
 La detección de ciclos negativos tiene una variedad de aplicaciones en varios campos. Por ejemplo en el diseño de circuitos electrónicos VLSI, se requiere aislar los bucles de retroalimentación negativa. Estos corresponden a ciclos de costo negativo en el grafo de ganancia del amplificador del circuito. Tomando como entrada de nuestro problema un grafo ponderado con valores enteros (positivos y/o negativos) dirigido donde un nodo corresponde al punto de partida, queremos conocer si existe al menos un ciclo negativo y en caso afirmativo mostrarlo en pantalla.
 
 Se pide:
@@ -142,6 +145,74 @@ En caso de no existir ciclos negativos: “No existen ciclos negativos en el gra
 En caso de existir ciclos negativos: “Existe al menos un ciclo negativo en el grafo. A,E,D → costo: -1”
 
 
+** Algoritmo de Bellman-Ford
+
+El algoritmo de Bellman-Ford es de tipo programacion dinamica y genera el camino
+mas corto en un grafo dirigido ponderado a partir de un nodo origen y a
+diferencia de Dijkstra permite hacerlo con grafos que tienen aristas con pesos
+negativos y detecta ciclos negativos.
+
+Este algoritmo se puede describir como los siguientes pasos:
+
+  1. Iniciamos:
+     - un diccionario de distancias con clave ~nodo/vertice~ y valor infinito.
+     - un diccionario de predecesores con clave ~nodo/vertice~ y valor nulo.
+     - la distancia de clave ~nodo_origen~ se cambia a 0.
+  2. Iterar por la cantidad de nodos del grafo:
+     - por cada arista, si la distancia guardada para llegar al origen de la
+       arista mas el peso de moverse al nodo destino de la arista es menor a la
+       distancia guardada para llegar al nodo destino de la arista, reemplazar la
+       distancia guardada del nodo destino.
+  3. Verificar que no haya ciclos negativos
+     - por cada arista, si se sigue cumpliendo la condición del punto anterior,
+       entonces hay un ciclo negativo
+
+
+*** Relación de Recurrencia
+
+Definiendo:
+ - $s$: nodo origen o /source node/
+ - $n_i$: otro nodo distinto al origen
+ - $j$: longitud maxima para llegar de $s$ a $n_i$
+ - $minPath(n_i, j)$: función recursiva para llegar al camino mínimo de $s$ a $n_i$
+ - $n_x$: predecesores a $n_i$
+ - $w(n_x,n_i)$: peso de la arista $n_x$ y $n_i$
+
+$$minPath(S, j) = 0$$
+$$minPath(n_i, 0) = +\infty\ \text{con}\ n_i \neq S$$
+$$
+minPath(n_i, j) = min \left\{ \begin{array}{lcc}
+             minPath(n_i, j-1) \\
+             min\ \{\ minPath(n_x, j-1) + w(n_x,n_i)\ \}
+             \end{array}
+   \right \}
+$$
+
+*** Pseudo-codigo
+
+
+#+begin_src
+funcion Bellman_Ford(Grafo grafo, Nodo origen)
+    siendo distancias un diccionario
+    siendo predecesores un diccionario
+
+    por cada vertice v del grafo:
+        distancias[v] = infinito
+
+    distancias[origen] = 0
+    padres[origen] = None
+
+    por cada vertice:
+        por cada arista de origen v y destino w y peso:
+            si distancias[v] + peso < distancias[w]:
+                predecesores[w] = v
+                distancias[w] = distintas[v] + peso
+
+    por cada arista de origen v y destino w y peso:
+        si distancias[v] + peso < distancias[w]:
+            tirar error "Hay un ciclo negativo"
+#+end_src
+
 ** Detalles de implementación
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
@@ -159,16 +230,28 @@ siguiente forma:
 El comprimido entregado incluye un archivo ejemplo en ~assets/grafo.txt~ con grafos ejemplos,
 por ejemplo:
 
+#+begin_src
+B
+D,A,-2
+B,A,3
+D,C,2
+C,D,-1
+B,E,2
+E,D,-2
+A,E,3
+#+end_src
+
 #+begin_src bash :results raw
 ./src/parte_2.py ./assets/grafo.txt
 #+end_src
 
 #+begin_src
-Graph({'D': {'A': '-2', 'C': '2'}, 'B': {'A': '3', 'E': '2'}, 'C': {'D': '-1'}, 'E': {'D': '-2'}, 'A': {'E': '3'}})
+Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 #+end_src
 
 * Parte 3: Un poco de teoría
 
+** Consigna :noexport:
 1. Hasta el momento hemos visto 3 formas distintas de resolver problemas. Greedy, división y conquista y programación dinámica.
 
    1. Describa brevemente en qué consiste cada una de ellas
