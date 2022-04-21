@@ -1,27 +1,25 @@
 #!/usr/bin/env python3
 import sys
-from graph import Grafo, Bellman_Ford
+from grafo import Grafo, Bellman_Ford
 
 def leer_grafo(nombre_fichero):
     """
     Lee un grafo a partir de un fichero de texto.
-    Devuelve un objeto de clase Graph
+    Devuelve un objeto de clase Grafo
     """
     
     with open(nombre_fichero, 'r') as f:
         raiz = f.readline()[0]
-        grafo = Grafo(raiz, es_dirigido=True)
-        grafo.agregar_vertice(raiz)
+        grafo = Grafo(raiz)
         
         for linea in f:
             linea = linea.rstrip()
             nodo1, nodo2, peso = linea.split(',')
-            grafo.agregar_arista(nodo1, nodo2, peso)
+            grafo.agregar_arista(nodo1, nodo2, int(peso))
         return grafo
 
 def main(nombre_fichero):
     grafo = leer_grafo(nombre_fichero)
-    # print(grafo)
     res = Bellman_Ford(grafo, grafo.raiz)
     if res:
         ciclos, costo = res

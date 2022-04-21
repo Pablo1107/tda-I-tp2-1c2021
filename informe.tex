@@ -1,4 +1,4 @@
-% Created 2022-04-20 Wed 23:11
+% Created 2022-04-21 Thu 00:15
 % Intended LaTeX compiler: pdflatex
 \documentclass[titlepage,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -70,10 +70,10 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \section{Parte 1: Un evento exclusivo}
-\label{sec:org229cb4b}
+\label{sec:org3abbcdd}
 
 \section{Parte 2: Ciclos negativos}
-\label{sec:org36d748c}
+\label{sec:org7d96b7a}
 
 En esta segunda parte del trabajo practico, se nos presenta el problema de
 analizar un grafo dirigido ponderado con valores enteros y verificar si tiene,
@@ -82,7 +82,7 @@ pantalla los nodos que contienen a dicho ciclo. Además, se nos pide que la
 solución presentada utilice programación dinámica.
 
 \subsection{Solución con Bellman-Ford}
-\label{sec:orgad48f40}
+\label{sec:org61a5150}
 Para resolver el problema enunciado podemos utilizar el algoritmo Bellman-Ford
 para calcular el camino mínimo en un grafo ponderado con aristas negativas a
 partir de un nodo de origen. Lógicamente, no podría encontrarse un camino mínimo
@@ -97,7 +97,7 @@ a ver que esto puede ser utilizado para encontrar ciclos negativos.
 Primero, veamos como calcular el camino mínimo:
 
 \subsubsection{Algoritmo}
-\label{sec:orgcf286e1}
+\label{sec:org98787eb}
 
 Primero, se inicializa la distancia del nodo de origen \(n_s\) hasta todos los
 vértices como infinito y la distancia al nodo \(n_s\) como cero. Luego por cada
@@ -126,7 +126,7 @@ iterar una vez mas y reconstruir el ciclo negativo.
 
 \begin{enumerate}
 \item Pseudo-codigo
-\label{sec:org1dca65d}
+\label{sec:org62872e0}
 
 \begin{verbatim}
 funcion Bellman_Ford(Grafo grafo, Nodo origen)
@@ -152,7 +152,7 @@ funcion Bellman_Ford(Grafo grafo, Nodo origen)
 \end{enumerate}
 
 \subsubsection{Complejidad}
-\label{sec:org7565a2b}
+\label{sec:org700b310}
 
 Podemos analizar la complejidad a partir del pseudo-codigo. Primero, tenemos un
 ciclo donde inicializamos las distancias de cada vértice al origen como
@@ -164,7 +164,7 @@ tiene una complejidad de O(E) porque se recorren todas las aristas una vez más.
 Entonces, la complejidad final del algoritmo es de O(V * E).
 
 \subsubsection{Relación de Recurrencia}
-\label{sec:org95f17a2}
+\label{sec:orga8a2b3c}
 
 Sea \(n_s\) en nodo de inicio, \(T\) el nodo final, \(N_i\) un nodo y \(predecesores[N_i]\) es el
 conjunto de los nodos adyacentes a \(N_i\), sabemos que para llegar desde el nodo \(n_s\)
@@ -201,13 +201,13 @@ minPath(n_i, j) = min \left\{\begin{array}{lcc}
 $$
 
 \subsection{Detalles de implementación}
-\label{sec:org96fc48a}
+\label{sec:org8af2814}
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
 instalado cualquier versión de \texttt{python3}.
 
 \subsubsection{Ejecución del programa}
-\label{sec:org7944f6f}
+\label{sec:org5c28f5a}
 
 El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
 siguiente forma:
@@ -238,6 +238,119 @@ A,E,3
 Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 \end{verbatim}
 
+\subsubsection{Estructuras de datos}
+\label{sec:org2d18e4c}
+
+Para la representación del grafo decidimos manteneral simple:
+\begin{itemize}
+\item Un lista de aristas para almacenar las aristas tal cual como estan en el archivo.
+\item Un set de vértices para mantener un registro de los vértices ingresados en
+cada arista.
+\end{itemize}
+
+\pagebreak
+
+\subsubsection{Implementación de Bellman-Ford en Python}
+\label{sec:org7fe2c15}
+
+Pasando el pseudo-codigo a Python obtenemos este resultado:
+
+\begin{minted}[]{python}
+def Bellman_Ford(grafo, origen):                         # O(V * E)
+    dist = {}
+    predecesores = {}
+
+    # Inicializar distancias en infinito
+    for v in grafo.vertices:                             # O(V)
+        dist[v] = float("inf")
+
+    # Inicializar distancias al origen en cero y
+    dist[origen] = 0
+    predecesores[origen] = None
+
+    # Ejecutar por cada vertice
+    for _ in grafo.vertices:                             # O(V * E)
+        cambio = False
+        for v, w, peso in grafo.aristas:                 # O(E)
+            if dist[v] + peso < dist[w]:
+                cambio = True
+                predecesores[w] = v
+                dist[w] = dist[v] + peso
+
+        if not cambio:
+            return
+
+    # Chequear si hay ciclos negativos
+    # y calcular dicho ciclo y su peso
+    ciclo = []
+    peso_ciclo = 0
+    for v, w, peso in grafo.aristas:                     # O(E)
+        if dist[v] + peso < dist[w]:
+            ciclo.append(v)
+            arista_actual = v
+            predecesor = predecesores[v]
+            peso_ciclo = grafo.peso(predecesor, arista_actual)
+
+            while predecesor != v:
+                ciclo.append(predecesor)
+                arista_actual = predecesor
+                predecesor = predecesores[predecesor]
+                peso_actual = grafo.peso(predecesor, arista_actual)
+                peso_ciclo += peso_actual
+
+            return ciclo[::-1], peso_ciclo               # O(V)
+\end{minted}
+
+Al igual que el pseudo-codigo, podemos describir la implementacion de la
+siguiente manera:
+
+\begin{enumerate}
+\item Iniciamos:
+\begin{itemize}
+\item un diccionario de distancias con clave \texttt{vertice} y valor infinito.
+\item un diccionario de predecesores donde la clave \texttt{origen} se inicializa en \texttt{None}
+\item la distancia de clave \texttt{origen} se cambia a \texttt{0}.
+\end{itemize}
+\item Iterar por la cantidad de vértices del grafo:
+\begin{itemize}
+\item por cada arista, si la distancia guardada para llegar al origen de la
+arista mas el peso de moverse al nodo destino de la arista es menor a la
+distancia guardada para llegar al nodo destino de la arista, reemplazar la
+distancia guardada del nodo destino.
+\item ademas, verificamos si no hubo un cambio en la iteración de aristas, si
+este es el caso, podemos confirmar que no existe ningún ciclo negativo
+por lo que devolvemos.
+\end{itemize}
+\item Verificar que no haya ciclos negativos
+\begin{itemize}
+\item por cada arista, si se sigue cumpliendo la condición del punto anterior,
+entonces hay un ciclo negativo
+\item si hay un ciclo negativo:
+\begin{itemize}
+\item reconstruir los nodos predecesores hasta llegar al nodo que se detecto
+y sumar los pesos de sus aristas.
+\item devolver el ciclo negativo y su peso
+\end{itemize}
+\end{itemize}
+\end{enumerate}
+
+
+\subsubsection{Calcular ciclo negativo}
+\label{sec:orgff872c5}
+
+A partir del algoritmo de Bellman-Ford agregamos código cuando se detecta el
+ciclo negativo que agrega el nodo que se detecto termina el ciclo negativo y se
+reconstruye los nodos predecesores iterando hasta volver al nodo original
+mientras que se suman todos sus pesos en la variable \texttt{peso\_ciclo}.
+
+Luego devolvemos al \texttt{ciclo} reconstruido invertido y el \texttt{peso\_ciclo} calculado.
+
+\subsubsection{Complejidad de la implementación}
+\label{sec:org24d18b0}
+
+Con la simple estructura que decidimos usar, el codigo y el pseudo-codigo tiene
+pocas diferencias, y la complejidad termina siendo la misma \(O(V * E)\).
+
 \section{Parte 3: Un poco de teoría}
-\label{sec:orgc901e9a}
+\label{sec:org83eb617}
 \end{document}

@@ -299,6 +299,101 @@ Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 
 *** Estructuras de datos
 
+Para la representación del grafo decidimos manteneral simple:
+  - Un lista de aristas para almacenar las aristas tal cual como estan en el archivo.
+  - Un set de vértices para mantener un registro de los vértices ingresados en
+    cada arista.
+
+\pagebreak
+
+*** Implementación de Bellman-Ford en Python
+
+Pasando el pseudo-codigo a Python obtenemos este resultado:
+
+#+begin_src python
+def Bellman_Ford(grafo, origen):                         # O(V * E)
+    dist = {}
+    predecesores = {}
+
+    # Inicializar distancias en infinito
+    for v in grafo.vertices:                             # O(V)
+        dist[v] = float("inf")
+
+    # Inicializar distancias al origen en cero y
+    dist[origen] = 0
+    predecesores[origen] = None
+
+    # Ejecutar por cada vertice
+    for _ in grafo.vertices:                             # O(V * E)
+        cambio = False
+        for v, w, peso in grafo.aristas:                 # O(E)
+            if dist[v] + peso < dist[w]:
+                cambio = True
+                predecesores[w] = v
+                dist[w] = dist[v] + peso
+
+        if not cambio:
+            return
+
+    # Chequear si hay ciclos negativos
+    # y calcular dicho ciclo y su peso
+    ciclo = []
+    peso_ciclo = 0
+    for v, w, peso in grafo.aristas:                     # O(E)
+        if dist[v] + peso < dist[w]:
+            ciclo.append(v)
+            arista_actual = v
+            predecesor = predecesores[v]
+            peso_ciclo = grafo.peso(predecesor, arista_actual)
+
+            while predecesor != v:
+                ciclo.append(predecesor)
+                arista_actual = predecesor
+                predecesor = predecesores[predecesor]
+                peso_actual = grafo.peso(predecesor, arista_actual)
+                peso_ciclo += peso_actual
+
+            return ciclo[::-1], peso_ciclo               # O(V)
+#+end_src
+
+Al igual que el pseudo-codigo, podemos describir la implementacion de la
+siguiente manera:
+
+  1. Iniciamos:
+     - un diccionario de distancias con clave ~vertice~ y valor infinito.
+     - un diccionario de predecesores donde la clave ~origen~ se inicializa en ~None~
+     - la distancia de clave ~origen~ se cambia a ~0~.
+  2. Iterar por la cantidad de vértices del grafo:
+     - por cada arista, si la distancia guardada para llegar al origen de la
+       arista mas el peso de moverse al nodo destino de la arista es menor a la
+       distancia guardada para llegar al nodo destino de la arista, reemplazar la
+       distancia guardada del nodo destino.
+     - ademas, verificamos si no hubo un cambio en la iteración de aristas, si
+       este es el caso, podemos confirmar que no existe ningún ciclo negativo
+       por lo que devolvemos.
+  3. Verificar que no haya ciclos negativos
+     - por cada arista, si se sigue cumpliendo la condición del punto anterior,
+       entonces hay un ciclo negativo
+     - si hay un ciclo negativo:
+       - reconstruir los nodos predecesores hasta llegar al nodo que se detecto
+         y sumar los pesos de sus aristas.
+       - devolver el ciclo negativo y su peso
+
+
+*** Calcular ciclo negativo
+
+A partir del algoritmo de Bellman-Ford agregamos código cuando se detecta el
+ciclo negativo que agrega el nodo que se detecto termina el ciclo negativo y se
+reconstruye los nodos predecesores iterando hasta volver al nodo original
+mientras que se suman todos sus pesos en la variable ~peso_ciclo~.
+
+Luego devolvemos al ~ciclo~ reconstruido invertido y el ~peso_ciclo~ calculado.
+
+*** Complejidad de la implementación
+
+Con la simple estructura que decidimos usar, el codigo y el pseudo-codigo tiene
+pocas diferencias, y la complejidad termina siendo la misma $O(V * E)$.
+
 * Parte 3: Un poco de teoría
 
 ** Consigna :noexport:
