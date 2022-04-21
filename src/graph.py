@@ -1,126 +1,131 @@
+from collections import defaultdict
+
 class Grafo():
-    def __init__(self, raiz, es_dirigido = False, es_pesado = False):
-        self.vertices = dict()
+    def __init__(self, raiz, es_dirigido = False):
+        self.vertices = defaultdict(dict)
+        self.aristas = defaultdict(dict)
         self.es_dirigido = es_dirigido
-        self.es_pesado = es_pesado
         self.raiz = raiz
 
-    def __len__(self):
-        return len(self.vertices)
-
-    def agregar_vertice(self,vertice):
-        if vertice not in self.vertices.keys():
-            self.vertices[vertice] = dict()
-            return True
-        else :
-            return False
+    def agregar_vertice(self, vertice):
+        self.vertices[vertice] = dict()
 
     def agregar_arista(self, origen, destino, peso = 1):
-        if origen not in self.vertices.keys():
-            self.agregar_vertice(origen)
-        if destino not in self.vertices.keys():
-            self.agregar_vertice(destino)
-
-        ady = self.vertices.get(origen)
-        ady[destino] = peso
+        self.aristas[(origen, destino)] = int(peso)
+        adyacentes = self.vertices[origen]
+        adyacentes[destino] = int(peso)
 
         if not self.es_dirigido:
-            ady2 = self.vertices.get(destino)
-            ady2[origen] = peso
+            self.aristas[(destino, origen)] = int(peso)
+            adyacentes_destino = self.vertices.get(destino)
+            adyacentes_destino[origen] = int(peso)
+
         return True
     
     def borrar_vertice(self, vertice):
-        if vertice not in self.vertices.keys():
+        if vertice not in self.vertices:
             return False
 
         for v in self.vertices:
-            if v in self.vertices[v].keys():
-                del self.vertices[v][vertices]
-        del  self.vertices[vertice]
+            try:
+                del self.vertices[v][vertice]
+            except KeyError:
+                pass
+
+        del self.vertices[vertice]
+
+        for arista in self.aristas:
+            if vertice in arista:
+                self.aristas.remove(arista)
+
         return True
 
     def borrar_arista(self, origen, destino):
-        del self.vertices[origen][destino]
-        if not self.es_dirigido:
-            del self.vertices[destino][origen]
+        try:
+            del self.aristas[(origen, destino)]
+            del self.vertices[origen][destino]
+            if not self.es_dirigido:
+                del self.vertices[destino][origen]
+            return True
+        except KeyError:
+            return False
 
     def son_adyacentes(self, origen, destino):
-        if destino in self.vertices[origen].keys():
-            return True
+        adyacente = (origin, destino) in self.aristas
+        if self.es_dirigido:
+            return adyacente
         else:
-            return False
+            return adyacente or (destino, origin) in self.aristas
 
-    def existe_vertice(self,vertice):
-        if vertice in self.vertices:
-            return True
-        else:
-            return False
+    def existe_vertice(self, vertice):
+        return vertice in self.vertices
 
-    def obtener_vertices(self):
+    def obtener_vertices(self): # O(n)
         return tuple(self.vertices.keys())
+
+    def obtener_aristas(self): # O(1)
+        return self.aristas
 
     def obtener_adyacentes(self, vertice):
         if vertice not in self.vertices.keys():
             return None
-        return tuple(self.vertices[vertice].keys())
+        return self.vertices[vertice].keys()
 
     def peso(self, origen, destino):
-        if origen not in self.vertices.keys():
+        if origen not in self.vertices or \
+           destino not in self.vertices[origen]:
             return None
-        if destino not in self.vertices[origen].keys():
-            return None
-        return int(self.vertices[origen][destino])
+
+        return self.vertices[origen][destino]
+
+    def __len__(self):
+        return len(self.vertices)
 
     def __str__(self):
         return '{}({})'.format(self.__class__.__name__, dict(self.vertices))
 
-def obterner_aristas(grafo):                             # O(V + E)
-    aristas = []
-    for v in grafo.obtener_vertices():
-        for w in grafo.obtener_adyacentes(v):
-            aristas.append((v, w, grafo.peso(v, w)))
-    return aristas
-
-def Bellman_Ford(grafo, origen):
+def Bellman_Ford(grafo, origen):                         # O(V * E)
+    vertices = grafo.obtener_vertices()                  # O(V)
+    aristas = grafo.obtener_aristas()                    # O(1)
     dist = {}
-    padres = {}
-    ciclo = []
-    peso_ciclo = 0
+    predecesores = {}
+
+    # Inicializar distancias en infinito
     for v in grafo.obtener_vertices():                   # O(V)
         dist[v] = float("inf") 
+
+    # Inicializar distancias al origen en cero y 
     dist[origen] = 0
-    padres[origen] = None
-    aristas = obterner_aristas(grafo)                    # O(V + E)
-    for i in range(len(grafo.obtener_vertices())):       # O(V * E)
+    predecesores[origen] = None
+
+    # Ejecutar por cada vertice
+    for _ in vertices:                                   # O(V * E)
         cambio = False
-        for v, w, peso in aristas:
+        for (v, w), peso in aristas.items():             # O(E)
             if dist[v] + peso < dist[w]:
                 cambio = True
-                padres[w] = v
+                predecesores[w] = v
                 dist[w] = dist[v] + peso
 
-        if not cambio:                       # Si no cmabia en toda una pasada
-            return None
+        if not cambio:
+            return
 
-    for v, w, peso in aristas:               # Se hace una iteracion mas
+    # Chequear si hay ciclos negativos
+    # y calcular dicho ciclo y su peso
+    ciclo = []
+    peso_ciclo = 0
+    for (v, w), peso in aristas.items():                 # O(E)
         if dist[v] + peso < dist[w]:
             ciclo.append(v)
             arista_actual = v
-            padre = padres[v]
-            peso_ciclo = grafo.peso(padre, arista_actual)
+            predecesor = predecesores[v]
+            peso_ciclo = grafo.peso(predecesor, arista_actual)
 
-            while padre != v:
-                ciclo.append(padre)
-                arista_actual = padre
-                padre = padres[padre]
-                peso_actual = grafo.peso(padre, arista_actual)
+            while predecesor != v:
+                ciclo.append(predecesor)
+                arista_actual = predecesor
+                predecesor = predecesores[predecesor]
+                peso_actual = grafo.peso(predecesor, arista_actual)
                 peso_ciclo += peso_actual
 
-            return ciclo[::-1], peso_ciclo
-
-    return None
-
-# Este algoritmo sirve cuando hay aristas negativas
-# Esto sirve para todos los grafos, pero como tarda mucho mas que Dijkstra no se usa
-# Solo combiene cuando es un grafo dirigido que admite aristas negativas
-# Tambien sirve para detectar ciclos negativos
+            return ciclo[::-1], peso_ciclo               # O(V)

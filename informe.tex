@@ -1,4 +1,4 @@
-% Created 2022-04-17 Sun 01:17
+% Created 2022-04-20 Wed 23:11
 % Intended LaTeX compiler: pdflatex
 \documentclass[titlepage,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -70,69 +70,63 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \section{Parte 1: Un evento exclusivo}
-\label{sec:org1041007}
+\label{sec:org229cb4b}
 
 \section{Parte 2: Ciclos negativos}
-\label{sec:orgcfff3dd}
+\label{sec:org36d748c}
 
-\subsection{Algoritmo de Bellman-Ford}
-\label{sec:org42036ff}
+En esta segunda parte del trabajo practico, se nos presenta el problema de
+analizar un grafo dirigido ponderado con valores enteros y verificar si tiene,
+por lo menos, un ciclo negativo. En el caso de tenerlo, debemos mostrar en
+pantalla los nodos que contienen a dicho ciclo. Además, se nos pide que la
+solución presentada utilice programación dinámica.
 
-El algoritmo de Bellman-Ford es de tipo programacion dinamica y genera el camino
-mas corto en un grafo dirigido ponderado a partir de un nodo origen y a
-diferencia de Dijkstra permite hacerlo con grafos que tienen aristas con pesos
-negativos y detecta ciclos negativos.
+\subsection{Solución con Bellman-Ford}
+\label{sec:orgad48f40}
+Para resolver el problema enunciado podemos utilizar el algoritmo Bellman-Ford
+para calcular el camino mínimo en un grafo ponderado con aristas negativas a
+partir de un nodo de origen. Lógicamente, no podría encontrarse un camino mínimo
+distinto a (menos infinito) si es que hay ciclos negativos. Esto es porque
+caeríamos en un punto donde resulta conveniente recorrer dicho ciclo
+infinitamente ya que cada vez se reduce más la longitud del camino mínimo. Vamos
+a ver que esto puede ser utilizado para encontrar ciclos negativos.
 
-Este algoritmo se puede describir como los siguientes pasos:
+
+\hfill
+
+Primero, veamos como calcular el camino mínimo:
+
+\subsubsection{Algoritmo}
+\label{sec:orgcf286e1}
+
+Primero, se inicializa la distancia del nodo de origen \(n_s\) hasta todos los
+vértices como infinito y la distancia al nodo \(n_s\) como cero. Luego por cada
+arista se verifica si la distancia guardada para llegar al vértice de origen de
+la arista sumado al peso de la arista es menor a la guardada para llegar al
+vértice destino de la arista. Esto se repite \(N – 1\) veces con \(N\) el número de
+nodos del grafo. De esta manera, en cada iteración \(i\), el algoritmo encuentra el
+camino mínimo de longitud máxima \(i\). Es por esto que el ciclo se repite \(N – 1\)
+veces, porque el camino mínimo sin ciclos podría ser de esa longitud. Es en este
+punto donde el algoritmo nos es de utilidad. Podemos aplicar el mismo
+procedimiento una vez, es decir viendo si se puede encontrar un camino mínimo de
+longitud \(N\) que sea menor al encontrado de longitud \(N – 1\). Si esto sucede,
+implica que estamos agregando una arista negativa formando un ciclo negativo. Es
+decir, identificamos el ciclo negativo que se nos pide en el enunciado.
+
+\hfill
+
+El algoritmo de Bellman-Ford termina ahí, en el caso de encontrar un ciclo
+negativo devuelve error y en caso contrario devuelve el camino mínimo o una
+estructura para reconstruirlo. En nuestro caso, necesitamos adaptar el algoritmo
+para que devuelva un ciclo negativo si es que hay o nada en caso de no haber.
+Entonces, lo que podemos hacer es una vez que sabemos que hay un ciclo negativo,
+iterar una vez mas y reconstruir el ciclo negativo.
+
+\pagebreak
 
 \begin{enumerate}
-\item Iniciamos:
-\begin{itemize}
-\item un diccionario de distancias con clave \texttt{nodo/vertice} y valor infinito.
-\item un diccionario de predecesores con clave \texttt{nodo/vertice} y valor nulo.
-\item la distancia de clave \texttt{nodo\_origen} se cambia a 0.
-\end{itemize}
-\item Iterar por la cantidad de nodos del grafo:
-\begin{itemize}
-\item por cada arista, si la distancia guardada para llegar al origen de la
-arista mas el peso de moverse al nodo destino de la arista es menor a la
-distancia guardada para llegar al nodo destino de la arista, reemplazar la
-distancia guardada del nodo destino.
-\end{itemize}
-\item Verificar que no haya ciclos negativos
-\begin{itemize}
-\item por cada arista, si se sigue cumpliendo la condición del punto anterior,
-entonces hay un ciclo negativo
-\end{itemize}
-\end{enumerate}
-
-
-\subsubsection{Relación de Recurrencia}
-\label{sec:orgcb0350c}
-
-Definiendo:
-\begin{itemize}
-\item \(s\): nodo origen o \emph{source node}
-\item \(n_i\): otro nodo distinto al origen
-\item \(j\): longitud maxima para llegar de \(s\) a \(n_i\)
-\item \(minPath(n_i, j)\): función recursiva para llegar al camino mínimo de \(s\) a \(n_i\)
-\item \(n_x\): predecesores a \(n_i\)
-\item \(w(n_x,n_i)\): peso de la arista \(n_x\) y \(n_i\)
-\end{itemize}
-
-$$minPath(S, j) = 0$$
-$$minPath(n_i, 0) = +\infty\ \text{con}\ n_i \neq S$$
-$$
-minPath(n_i, j) = min \left\{ \begin{array}{lcc}
-             minPath(n_i, j-1) \\
-             min\ \{\ minPath(n_x, j-1) + w(n_x,n_i)\ \}
-             \end{array}
-   \right \}
-$$
-
-\subsubsection{Pseudo-codigo}
-\label{sec:org68d106f}
-
+\item Pseudo-codigo
+\label{sec:org1dca65d}
 
 \begin{verbatim}
 funcion Bellman_Ford(Grafo grafo, Nodo origen)
@@ -155,15 +149,65 @@ funcion Bellman_Ford(Grafo grafo, Nodo origen)
         si distancias[v] + peso < distancias[w]:
             tirar error "Hay un ciclo negativo"
 \end{verbatim}
+\end{enumerate}
+
+\subsubsection{Complejidad}
+\label{sec:org7565a2b}
+
+Podemos analizar la complejidad a partir del pseudo-codigo. Primero, tenemos un
+ciclo donde inicializamos las distancias de cada vértice al origen como
+infinito. Es decir O(V), donde V es la cantidad de vértices. Luego, por cada
+vértice sin contar el origen recorremos todas las aristas adyacentes que en el
+peor de los casos resulta O(E). Es decir que el ciclo entero tiene una
+complejidad de O(V * E). Finalmente, encontrar el ciclo negativo y devolverlo
+tiene una complejidad de O(E) porque se recorren todas las aristas una vez más.
+Entonces, la complejidad final del algoritmo es de O(V * E).
+
+\subsubsection{Relación de Recurrencia}
+\label{sec:org95f17a2}
+
+Sea \(n_s\) en nodo de inicio, \(T\) el nodo final, \(N_i\) un nodo y \(predecesores[N_i]\) es el
+conjunto de los nodos adyacentes a \(N_i\), sabemos que para llegar desde el nodo \(n_s\)
+al nodo \(N_i\) en una cantidad de pasos \(j\) debemos haber llegado a alguno de sus
+predecesores en \(j-1\) pasos. Entonces, siendo la longitud la cantidad de nodos que
+se recorren hasta llegar al nodo \(N_i\), se deduce de lo planteado que el camino
+mínimo hasta el nodo \(N_i\) dada una longitud máxima \(L\) es el mínimo de los caminos
+hacia sus predecesores mas la longitud de llegar del predecesor a \(N_i\). Por lo
+tanto, nuestra ecuación de recurrencia resulta:
+
+Definiendo:
+\begin{itemize}
+\item \(n_s\): nodo origen o \emph{source node}
+\item \(n_i\): otro nodo distinto al origen
+\item \(j\): longitud máxima para llegar de \(n_s\) a \(n_i\)
+\item \(minPath(n_i, j)\): función recursiva para llegar al camino mínimo de \(s\) a \(n_i\)
+\item \(n_x\): predecesores a \(n_i\)
+\item \(k\): cantidad de predecesores a \(n_i\)
+\item \(w(n_x,n_i)\): peso de la arista \(n_x\) y \(n_i\)
+\end{itemize}
+
+$$minPath(n_s, j) = 0$$
+$$minPath(n_i, 0) = +\infty\ \text{con}\ n_i \neq S$$
+$$
+minPath(n_i, j) = min \left\{\begin{array}{lcc}
+                        minPath(n_i, j-1) \\
+                        min\ \left\{\begin{array}{lcc}
+                               minPath(n_x_1, j-1) + w(n_x_1,n_i) \\
+                               minPath(n_x_2, j-1) + w(n_x_2,n_i) \\
+                               ... \\
+                               minPath(n_x_k, j-1) + w(n_x_k,n_i)
+                             \end{array}\right\}
+                      \end{array}\right\}
+$$
 
 \subsection{Detalles de implementación}
-\label{sec:org00f3d41}
+\label{sec:org96fc48a}
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
 instalado cualquier versión de \texttt{python3}.
 
 \subsubsection{Ejecución del programa}
-\label{sec:org950b3e5}
+\label{sec:org7944f6f}
 
 El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
 siguiente forma:
@@ -195,5 +239,5 @@ Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 \end{verbatim}
 
 \section{Parte 3: Un poco de teoría}
-\label{sec:orgc10b237}
+\label{sec:orgc901e9a}
 \end{document}

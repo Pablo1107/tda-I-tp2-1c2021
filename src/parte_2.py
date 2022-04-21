@@ -9,8 +9,9 @@ def leer_grafo(nombre_fichero):
     """
     
     with open(nombre_fichero, 'r') as f:
-        raiz = f.readline()[0] # ignore first line
-        grafo = Grafo(raiz, es_dirigido=True,es_pesado=True)
+        raiz = f.readline()[0]
+        grafo = Grafo(raiz, es_dirigido=True)
+        grafo.agregar_vertice(raiz)
         
         for linea in f:
             linea = linea.rstrip()
