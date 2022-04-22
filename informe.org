@@ -216,6 +216,13 @@ funcion Bellman_Ford(Grafo grafo, Nodo origen)
             tirar error "Hay un ciclo negativo"
 #+end_src
 
+*** Sub-estructura optima
+
+Para calcular las distancias mínimas de un nodo hacia otro se utiliza la
+distancia mínima calculado anteriormente para su predecesor mas el peso de
+llegar a el. Entonces la subestructura seria los caminos mínimos de todos los
+nodos predecesores al nodo final.
+
 *** Complejidad
 
 Podemos analizar la complejidad a partir del pseudo-codigo. Primero, tenemos un
@@ -308,55 +315,7 @@ Para la representación del grafo decidimos manteneral simple:
 
 *** Implementación de Bellman-Ford en Python
 
-Pasando el pseudo-codigo a Python obtenemos este resultado:
-
-#+begin_src python
-def Bellman_Ford(grafo, origen):                         # O(V * E)
-    dist = {}
-    predecesores = {}
-
-    # Inicializar distancias en infinito
-    for v in grafo.vertices:                             # O(V)
-        dist[v] = float("inf")
-
-    # Inicializar distancias al origen en cero y
-    dist[origen] = 0
-    predecesores[origen] = None
-
-    # Ejecutar por cada vertice
-    for _ in grafo.vertices:                             # O(V * E)
-        cambio = False
-        for v, w, peso in grafo.aristas:                 # O(E)
-            if dist[v] + peso < dist[w]:
-                cambio = True
-                predecesores[w] = v
-                dist[w] = dist[v] + peso
-
-        if not cambio:
-            return
-
-    # Chequear si hay ciclos negativos
-    # y calcular dicho ciclo y su peso
-    ciclo = []
-    peso_ciclo = 0
-    for v, w, peso in grafo.aristas:                     # O(E)
-        if dist[v] + peso < dist[w]:
-            ciclo.append(v)
-            arista_actual = v
-            predecesor = predecesores[v]
-            peso_ciclo = grafo.peso(predecesor, arista_actual)
-
-            while predecesor != v:
-                ciclo.append(predecesor)
-                arista_actual = predecesor
-                predecesor = predecesores[predecesor]
-                peso_actual = grafo.peso(predecesor, arista_actual)
-                peso_ciclo += peso_actual
-
-            return ciclo[::-1], peso_ciclo               # O(V)
-#+end_src
-
-Al igual que el pseudo-codigo, podemos describir la implementacion de la
+Al igual que el pseudo-codigo, podemos describir la implementación de la
 siguiente manera:
 
   1. Iniciamos:
@@ -379,7 +338,6 @@ siguiente manera:
          y sumar los pesos de sus aristas.
        - devolver el ciclo negativo y su peso
 
-
 *** Calcular ciclo negativo
 
 A partir del algoritmo de Bellman-Ford agregamos código cuando se detecta el
@@ -394,6 +352,16 @@ Luego devolvemos al ~ciclo~ reconstruido invertido y el ~peso_ciclo~ calculado.
 Con la simple estructura que decidimos usar, el codigo y el pseudo-codigo tiene
 pocas diferencias, y la complejidad termina siendo la misma $O(V * E)$.
 
+En el código de Python tenemos las siguiente operaciones:
+ - Inicializar las distancias en infinito que lo hacemos con un simple ~for~
+   sobre ~grafo.vertices~ por lo que la complejidad computacional es ~O(V)~.
+ - Luego hacemos un ~for~ anidado entre ~grafo.vertices~ (un /set/ de python) y
+   ~grafo.aristas~ (un /lista/ de python), y como decidimos tener estructura
+   simple (cuando creamos el grafo almacenamos los vértices y las aristas como
+   vienen), la complejidad termina siendo la multiplicación de los dos ciclos es
+   decir ~O(V * E)~ ya que en Python tanto iterar sobre listas o sobre sets es
+   ~O(n)~.
+
 * Parte 3: Un poco de teoría
 
 ** Consigna :noexport:
@@ -406,3 +374,69 @@ pocas diferencias, y la complejidad termina siendo la misma $O(V * E)$.
 2. Un determinado problema puede ser resuelto tanto por un algoritmo Greedy, como por un algoritmo de División y Conquista. El algoritmo greedy realiza N^3 operaciones sobre una matriz, mientras que el algoritmo de Programación Dinámica realiza N^2 operaciones en total, pero divide el problema en N^2 subproblemas a su vez, los cuales debe ir almacenando mientras se ejecuta el algoritmo. Teniendo en cuenta los recursos computacionales involucrados (CPU, memoria, disco) ¿Qué algoritmo elegiría para resolver el problema y por qué?
 
 Pista: probablemente no haya una respuesta correcta para este problema, solo justificaciones correctas
+
+** Algoritmos Greedy :noexport:
+
+La estrategia Greedy consiste en dividir un problema en subproblemas que tengan
+una jerarquía entre si y cada subproblema se resuelve usando una heuristica
+llamada /eleccion greedy/.
+
+Le eleccion greedy consiste
+
+Ademas de poder elegir una elección greedy, también debe poder tener una
+subestructura optima, es decir, que la resolución optima de esos subproblemas me
+lleven a una solucion optima en el caso general.
+
+** Comparación de estrategias
+
+No existe una mejor estrategia, algunos problemas directamente no se pueden
+plantear usando una de las tres estrategias vistas, por lo que plantear una
+mejor no tiene sentido.
+
+En el caso de se pueda resolver con las tres, vas a terminar eligiendo una
+estrategia sobre otra por la que resuelva el problema o con mejor complejidad
+temporal o menor complejidad espacial como se explica para el siguiente problema:
+
+** El problema
+
+Se trabaja sobre una matriz. El ejercicio no da mucha información acerca de la
+complejidad espacial, por lo que tenemos dar supuestos:
+
+El Algoritmo Greedy realiza ~N^3~ operaciones sobre la matriz. En primero lugar,
+podríamos suponer que la complejidad espacial es ~O(algo)~, en el caso del de
+Programación Dinámica que divide el problema en ~n^2~ sub-problemas, podríamos
+decir que la complejidad espacial de este ultimo es ~O(algo * n^2)~ por lo que
+siempre se cumpliría que la complejidad espacial de Programación Dinámica es
+mayor a la del Algoritmo Greedy.
+
+El de Programación Dinámica realiza N^2 operaciones sobre la matriz, por lo que
+la /complejidad temporal/ del Algoritmo Greedy es menor Programación Dinámica.
+
+Frente a dos algoritmos que resuelven el mismo problema, siempre se deberia
+elegir aquel que tenga menor complejidad temporal y espacial. En caso de tener
+igual complejidad espacial, se elige el de menor complejidad temporal y
+viceversa.
+
+El problema surgue cuando tenes que uno tiene una complejidad mayor que la otra,
+en ese caso vas a tener que tener en cuenta el sistema donde se va a ejecutar y
+las condiciones.
+
+*** ¿Porque eligiria el Algoritmo Greedy?
+Si yo tengo poca memoria (como el caso de sistema embedidos), yo tal vez ni
+siquiera tendria la posibilidad de poder ejecutar el algoritmo con Programación
+Dinamica porque no tengo suficiente memoria para procesarlo.
+
+*** ¿Porque eligiria el de Programación Dinámica?
+En computadoras modernas, la mayoría de los sistemas vienen con bastante memoria
+(>8GB) entonces podría despreciar el hecho de que necesito mas memoria para
+procesar el algoritmo en orden de ganar en tiempo de ejecución.
+
+*** Conclusión
+No hay un algoritmo perfecto para todos los casos, solo hay algoritmos optimos
+para un caso de uso. Elegir entre un algoritmo que tiene complejidad espacial
+O(n^2) y complejidad espacial O(n^2) y otro algoritmo de complejidad espacial
+O(1) y complejidad temporal O(n^3), dependiendo de las condiciones donde se
+ejecuta, el algoritmo eligiria uno sobre otro, pero la realidad es que a menos
+que este trabajando en sistemas embebidos (o algun sistema especifico con muy
+poca memoria), es mas probable que priorice la complejidad temporal que la
+espacial.
