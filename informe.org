@@ -381,11 +381,34 @@ La estrategia Greedy consiste en dividir un problema en subproblemas que tengan
 una jerarquía entre si y cada subproblema se resuelve usando una heuristica
 llamada /eleccion greedy/.
 
-Le eleccion greedy consiste
-
+Le elección greedy consiste en una selección optima local en un subproblema.
 Ademas de poder elegir una elección greedy, también debe poder tener una
-subestructura optima, es decir, que la resolución optima de esos subproblemas me
-lleven a una solucion optima en el caso general.
+/subestructura optima/, es decir, que la resolución optima de esos subproblemas me
+lleven a una solución optima en el caso general.
+
+Lo dificil de los algoritmos greedy es poder demostrar que las elecciones optimas
+en los subproblemas nos acerca realmente a una solucion optima global, como tal
+esta estrategia no nos garantiza poder encontrar soluciones optimas. Aunque la
+ventaja principal es que son fáciles de armar.
+
+** División y Conquista
+
+La división y conquista es una técnica algorítmica que consiste en 3 elementos
+claves. El primero es, dividir el problema en N subproblemas menores pero que se
+puedan resolver igual. Luego, resolver estos problemas de manera recursiva
+planteando un caso base, es decir un caso donde el problema se resuelva de forma
+trivial y no haga falta dividirlo. Finalmente, se combina la solución hallada de
+todos los subproblemas para formar la solución general.
+
+Entonces, es evidente que para que un problema se pueda resolver por división y
+conquista debe tener subestructura optima. La complejidad temporal utilizando
+esta estrategia se calcula una vez obtenida la relación de recurrencia del
+problema. Para ello, se puede, o bien desarrollar la relación de recurrencia
+matemáticamente utilizando el costo del caso base o, utilizar el Teorema
+Maestro. Este ultimo teorema, no necesariamente resuelve todos los problemas de
+división y conquista pero por lo general es una herramienta muy útil.
+
+** Programacion Dinamica
 
 ** Comparación de estrategias
 
