@@ -444,9 +444,26 @@ funcion Bellman_Ford(Grafo grafo, Nodo origen)
                 predecesores[w] = v
                 distancias[w] = distintas[v] + peso
 
+    siendo ciclo una lista
+    siendo peso_ciclo un numero inicializado en cero
+
     por cada arista de origen v y destino w y peso:
         si distancias[v] + peso < distancias[w]:
-            tirar error "Hay un ciclo negativo"
+            sea arista_actual
+            sea predecesor
+
+            agregar v al ciclo
+            arista_actual = v
+            predecesor = predecesores[v]
+            peso_ciclo = peso
+
+            mientras predecesor sea desigual a v
+                agregar predecesor a ciclo
+                arista_actual = predecesor
+                predecesor = predecesores[predecesor]
+                peso_ciclo += peso de la arista predecesor y arista_actual
+
+            devolver ciclo y peso_ciclo
 #+end_src
 
 *** Sub-estructura optima
