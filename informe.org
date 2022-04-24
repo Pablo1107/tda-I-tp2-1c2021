@@ -63,6 +63,13 @@
 #+END_EXPORT
 
 * Parte 1: Un evento exclusivo
+
+Para esta primera sección, se plantea un problema en el que, dado un ranking 
+de jugadores que corresponde a este año, y la posición de cada jugador en el 
+ranking del año anterior, hallar para cada jugador la cantidad de jugadores
+que superó en el ranking de un año a otro (i.e. con cuántos se invirtió el
+órden relativo)
+
 ** Consigna :noexport:
 Todos los años la asociación de un importante deporte individual profesional realiza una preclasificación de los n jugadores que terminaron en las mejores posiciones del ranking para un evento exclusivo. En la tarjeta de invitación que enviarán suelen adjuntar el número de posición en la que está actualmente y a cuantos rivales superó en el ranking (únicamente entre los invitados). Contamos con un listado que tiene el nombre del jugador y la posición del ranking del año pasado. Ese listado está ordenado por el ranking actual.
 
@@ -644,29 +651,43 @@ división y conquista pero por lo general es una herramienta muy útil.
 
 ** Programacion Dinamica
 
+La programación dinámica resuelve problemas de índole de optimización. Para 
+ello, el problema tiene que tener dos características: Subestructura óptima y 
+Subproblemas superpuestos. La primera, implica que la resolución de un 
+problema global contiene resoluciones óptimas de sus subproblemas. La segunda, 
+refiere a la aparición de subproblemas previamente calculados. Esta última 
+propiedad es la que se aprovecha junto a técnicas de programación como la 
+memorización para reducir la complejidad del algoritmo. Al guardarse los 
+resultados óptimos de los subproblemas, se evita tener que volver a calcularlos. 
+La complejidad de este tipo de algoritmo se calcula con una relación de 
+recurrencia la cual tiene en cuenta un caso base y la resolución de un problema 
+N en relacion a un problema N-1. En forma iterativa, entonces, se procede a 
+calcular los subproblemas más chicos cuyos resultados serán utilizados 
+para los siguientes.
+
 ** Comparación de estrategias
 
 No existe una mejor estrategia, algunos problemas directamente no se pueden
-plantear usando una de las tres estrategias vistas, por lo que plantear una
-mejor no tiene sentido.
+plantear usando una de las tres estrategias vistas, por lo que categorizar una
+como la mejor no tiene sentido.
 
-En el caso de se pueda resolver con las tres, vas a terminar eligiendo una
-estrategia sobre otra por la que resuelva el problema o con mejor complejidad
-temporal o menor complejidad espacial como se explica para el siguiente problema:
+En el caso de poder resolverse con npas de una, se elige la estrategia 
+que resuelva el problema, o con mejor complejidad temporal, o menor complejidad espacial,
+como se ejemplifica en el para el siguiente problema:
 
 ** El problema
 
 Se trabaja sobre una matriz. El ejercicio no da mucha información acerca de la
 complejidad espacial, por lo que tenemos dar supuestos:
 
-El Algoritmo Greedy realiza ~N^3~ operaciones sobre la matriz. En primero lugar,
-podríamos suponer que la complejidad espacial es ~O(algo)~, en el caso del de
-Programación Dinámica que divide el problema en ~n^2~ sub-problemas, podríamos
-decir que la complejidad espacial de este ultimo es ~O(algo * n^2)~ por lo que
-siempre se cumpliría que la complejidad espacial de Programación Dinámica es
+El Algoritmo Greedy realiza $N^3$ operaciones sobre la matriz. En primero lugar,
+podríamos suponer que la complejidad espacial es $O(K)$, con $K$ una constante. 
+En el caso de Programación Dinámica que divide el problema en $n^2$ sub-problemas,
+podríamos decir que la complejidad espacial de este ultimo es $O(K * n^2)$ por lo 
+que siempre se cumpliría que la complejidad espacial de Programación Dinámica es
 mayor a la del Algoritmo Greedy.
 
-El de Programación Dinámica realiza N^2 operaciones sobre la matriz, por lo que
+El de Programación Dinámica realiza $N^2$ operaciones sobre la matriz, por lo que
 la /complejidad temporal/ del Algoritmo Greedy es menor Programación Dinámica.
 
 Frente a dos algoritmos que resuelven el mismo problema, siempre se deberia
@@ -674,9 +695,9 @@ elegir aquel que tenga menor complejidad temporal y espacial. En caso de tener
 igual complejidad espacial, se elige el de menor complejidad temporal y
 viceversa.
 
-El problema surgue cuando tenes que uno tiene una complejidad mayor que la otra,
-en ese caso vas a tener que tener en cuenta el sistema donde se va a ejecutar y
-las condiciones.
+El problema surgue cuando uno tiene una complejidad mayor que la otra,
+en ese caso debe tenerse en cuenta las características y condiciones 
+del sistema donde se va a ejecutar.
 
 *** ¿Porque eligiria el Algoritmo Greedy?
 Si yo tengo poca memoria (como el caso de sistema embedidos), yo tal vez ni
@@ -690,10 +711,10 @@ procesar el algoritmo en orden de ganar en tiempo de ejecución.
 
 *** Conclusión
 No hay un algoritmo perfecto para todos los casos, solo hay algoritmos optimos
-para un caso de uso. Elegir entre un algoritmo que tiene complejidad espacial
-O(n^2) y complejidad espacial O(n^2) y otro algoritmo de complejidad espacial
-O(1) y complejidad temporal O(n^3), dependiendo de las condiciones donde se
-ejecuta, el algoritmo eligiria uno sobre otro, pero la realidad es que a menos
+para un problema. Elegir entre un algoritmo que tiene complejidad espacial
+$O(n^2)$ y complejidad espacial $O(n^2)$, y otro algoritmo de complejidad espacial
+$O(1)$ y complejidad temporal $O(n^3)$, dependiendo de las condiciones donde se
+ejecuta, el algoritmo eligiria uno sobre otro, pero la realidad es que, a menos
 que este trabajando en sistemas embebidos (o algun sistema especifico con muy
 poca memoria), es mas probable que priorice la complejidad temporal que la
 espacial.
