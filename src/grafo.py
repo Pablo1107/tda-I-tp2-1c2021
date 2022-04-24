@@ -13,7 +13,7 @@ class Grafo():
         self.agregar_vertice(origen)
         self.agregar_vertice(destino)
 
-    def peso(self, origen, destino):
+    def peso(self, origen, destino):                     # O(E)
         for arista in self.aristas:
             if arista[0] == origen and arista[1] == destino:
                 return arista[2]
@@ -47,18 +47,18 @@ def Bellman_Ford(grafo, origen):                         # O(V * E)
     # y calcular dicho ciclo y su peso
     ciclo = []
     peso_ciclo = 0
-    for v, w, peso in grafo.aristas:                     # O(E)
+    for v, w, peso in grafo.aristas:                     # O(V * E)
         if dist[v] + peso < dist[w]:
             ciclo.append(v)
             arista_actual = v
             predecesor = predecesores[v]
-            peso_ciclo = grafo.peso(predecesor, arista_actual)
+            peso_ciclo = grafo.peso(predecesor, arista_actual) # O(E)
 
-            while predecesor != v:
+            while predecesor != v:                      # O(V * E)
                 ciclo.append(predecesor)
                 arista_actual = predecesor
                 predecesor = predecesores[predecesor]
-                peso_actual = grafo.peso(predecesor, arista_actual)
+                peso_actual = grafo.peso(predecesor, arista_actual) # O(E)
                 peso_ciclo += peso_actual
 
             return ciclo[::-1], peso_ciclo               # O(V)

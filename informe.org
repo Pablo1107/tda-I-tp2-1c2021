@@ -446,14 +446,17 @@ nodos predecesores al nodo final.
 
 *** Complejidad
 
-Podemos analizar la complejidad a partir del pseudo-codigo. Primero, tenemos un
-ciclo donde inicializamos las distancias de cada vértice al origen como
-infinito. Es decir O(V), donde V es la cantidad de vértices. Luego, por cada
-vértice sin contar el origen recorremos todas las aristas adyacentes que en el
-peor de los casos resulta O(E). Es decir que el ciclo entero tiene una
-complejidad de O(V * E). Finalmente, encontrar el ciclo negativo y devolverlo
-tiene una complejidad de O(E) porque se recorren todas las aristas una vez más.
-Entonces, la complejidad final del algoritmo es de O(V * E).
+Podemos analizar la complejidad temporal a partir del pseudo-codigo. Primero,
+tenemos un ciclo donde inicializamos las distancias de cada vértice al origen
+como infinito. Es decir ~O(V)~, donde V es la cantidad de vértices. Luego, por
+cada vértice sin contar el origen recorremos todas las aristas que resulta
+~O(E)~. Es decir que el ciclo entero tiene una complejidad de ~O(V * E)~.
+Finalmente, encontrar el ciclo negativo y devolverlo tiene una complejidad de
+~O(E)~ porque se recorren todas las aristas una vez más.  Entonces, la
+complejidad final del algoritmo es de ~O(V * E)~.
+
+Y la complejidad espacial es ~O(V)~. porque almacenamos dos diccionarios para
+las distancias y los predecesores que son de maximo ~V~.
 
 *** Relación de Recurrencia
 
@@ -571,7 +574,7 @@ Luego devolvemos al ~ciclo~ reconstruido invertido y el ~peso_ciclo~ calculado.
 *** Complejidad de la implementación
 
 Con la simple estructura que decidimos usar, el codigo y el pseudo-codigo tiene
-pocas diferencias, y la complejidad termina siendo la misma $O(V * E)$.
+pocas diferencias, y la complejidad temporal termina siendo la misma $O(V * E)$.
 
 En el código de Python tenemos las siguiente operaciones:
  - Inicializar las distancias en infinito que lo hacemos con un simple ~for~
@@ -582,6 +585,14 @@ En el código de Python tenemos las siguiente operaciones:
    vienen), la complejidad termina siendo la multiplicación de los dos ciclos es
    decir ~O(V * E)~ ya que en Python tanto iterar sobre listas o sobre sets es
    ~O(n)~.
+ - Ademas, en la búsqueda de ciclos negativos hacemos uso de ~grafo.peso()~, que
+   por la estructura que tenemos es ~O(E)~ por lo que como ademas iteramos sobre
+   todas las aristas esa parte queda ~O(V * E)~.
+
+Y la complejidad espacial es ~O(V)~ porque solo guardamos dos diccionarios de
+largo ~V~, uno con las distancias y otro con los predecesores y en caso de
+encontrar un ciclo negativo es como mucho de largo ~V~, lo que en el peor de los
+casos es ~O(3*V)~ que es ~O(V)~.
 
 \newpage
 
