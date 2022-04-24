@@ -1,4 +1,4 @@
-% Created 2022-04-24 Sun 20:11
+% Created 2022-04-24 Sun 20:18
 % Intended LaTeX compiler: pdflatex
 \documentclass[titlepage,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -75,7 +75,7 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \section{Parte 1: Un evento exclusivo}
-\label{sec:org35823f3}
+\label{sec:org35d0f65}
 
 Para esta primera sección, se plantea un problema en el que, dado un ranking 
 de jugadores que corresponde a este año, y la posición de cada jugador en el 
@@ -84,12 +84,12 @@ que superó en el ranking de un año a otro (i.e. con cuántos se invirtió el
 órden relativo)
 
 \subsection{Resolución por Fuerza Bruta}
-\label{sec:orgbb2dcca}
+\label{sec:org5b317a0}
 
 Para cada uno de los jugadores en el ranking actual se evalúan los siguientes hasta el final del ranking. En dicha iteración se aumenta un contador cada vez que se encuentre un jugador con un ranking menor al del año pasado que el jugador que se está recorriendo actualmente. Por último, se guarda dicho contador en una lista y al finalizar las iteraciones se devuelve dicha lista.
 
 \subsubsection{Pseudocódigo}
-\label{sec:org619a882}
+\label{sec:org278d5a0}
 
 \begin{minted}[bgcolor=bg]{text}
 def rivales_superados(listado):
@@ -103,20 +103,20 @@ def rivales_superados(listado):
 \end{minted}
 
 \subsubsection{Complejidad temporal}
-\label{sec:orgf1cdc4e}
+\label{sec:orgd9b9996}
 
 Por cada jugador se recorren todos los siguientes, lo cual conlleva a una complejidad de \(O(n^2)\).
 
 \subsubsection{Complejidad espacial}
-\label{sec:orgfd2c5b1}
+\label{sec:org368a43a}
 
 Los resultados a devolver ocupan \(O(n)\) y el resto de las variables son constantes, consecuentemente la complejidad espacial es \(O(n)\).
 
 \subsection{Resolución por División y Conquista}
-\label{sec:orgffde9df}
+\label{sec:org3a46900}
 
 \subsubsection{Idea General}
-\label{sec:orgc52a29d}
+\label{sec:orgc13be62}
 
 La resolución planteada por división y conquista es similar al ejercicio “Contando inversiones”. En este caso la idea es partir del listado ordenado por el ranking actual, dividir el problema por la mitad de forma recursiva y luego desenrrollar la recursividad ordenando por el ranking del año pasado. Al realizar este proceso veremos los rankings que “se cruzan” lo cual permitirá aumentar el contador de los rivales superados.
 
@@ -127,7 +127,7 @@ Por ejemplo, siguiendo el ejemplo dado en la consigna, siguiendo la ejecución s
 Para solventarlo, la modificación es sencilla: realizar el merge en sentido inverso, en orden descendente en lugar de ascendente, comenzando a unir por el final de cada arreglo en lugar del comienzo. Para el mismo ejemplo: primero comparamos D con F, como D es mayor, lo insertamos en el arreglo mezcla y, como esperábamos que fuese menor, contamos una inversión para D; continuando, comparamos E y F, y volvemos a estar frente al mismo caso; luego, solo queda insertar F. De esta manera, se siguen contando 2 inversiones, pero ahora se distingue con quiénes se dió cada una. Dependiendo de la implementación, el arreglo puede construirse insertando siempre al principio, de manera que quede ascendente, o construirlo descendente y luego invertirlo.
 
 \subsubsection{Pseudocódigo}
-\label{sec:orge29a7c1}
+\label{sec:org0298f0d}
 
 \begin{minted}[bgcolor=bg]{text}
 funcion rivales_superados(jugadores)
@@ -173,7 +173,7 @@ funcion unir_y_contar_superados(lista_inf, lista_sup, superados)
 \end{minted}
 
 \subsubsection{Complejidad temporal por Teorema Maestro}
-\label{sec:orge8e0d40}
+\label{sec:org90d106d}
 
 El teorema del maestro establece que, dados \(a\) y \(b\) constantes, \(f(n)\) una función, \(T(n) = a * T(n/b) + f(n)\) una recurrencia con T(0)=cte:
 \begin{itemize}
@@ -194,7 +194,7 @@ De la relación de recurrencia observamos que \(a=b=2\). Analizando caso a caso:
 En conclusión, por teorema maestro, la complejidad temporal es \(T(n) = \Theta(n^{log_2 2} * log n) = \Theta(n log(n))\)
 
 \subsubsection{Complejidad temporal desenrrollando la recurrencia}
-\label{sec:org4c80557}
+\label{sec:orgf82f1ff}
 
 En este caso la forma de desenrollar la recurrencia es análoga a la del merge sort:
 
@@ -209,14 +209,14 @@ Luego es necesario calcular la cantidad de niveles que tendrá nuestro algoritmo
 Finalmente, al multiplicar la cantidad de operaciones a realizar en cada nivel por la cantidad total de niveles obtenemos que la complejidad temporal es \(O(cn * (log_2 n - 1)) = O(n * log_2 n)\)
 
 \subsubsection{Complejidad espacial}
-\label{sec:org8e33d4c}
+\label{sec:orgbe09311}
 
 La única estructura adicional al arreglo provisto como entrada del algoritmo es un diccionario/lista que contabilice la cantidad de inversiones de cada elemento. Como en el peor de los casos todos los elementos cuentan con inversiones, se considera que el arreglo puede tener hasta \(n\) elementos. La división de listas en mitades depende de la implementación del algoritmo.
 
 En conclusión, el algoritmo tiene una complejidad espacial de \(E(n) = O(n)\)
 
 \subsection{Ejemplo de funcionamiento}
-\label{sec:org169ce63}
+\label{sec:org38e43f3}
 
 Tomaremos como caso el ejemplo dado por la cátedra, pero realizaremos una modificación para que sean 8 jugadores en lugar de 6. De manera que la lista de entrada estará dada por las tuplas (id,ranking): A,3 | B,4 | C,2 | D,8 | E,6 | F,5 | H,7 | G,1
 
@@ -331,7 +331,7 @@ superados = { A: 2, B: 2, C: 1, D: 1, E: 2, F: 1, H: 1} # resultado final
 \newpage
 
 \section{Parte 2: Ciclos negativos}
-\label{sec:org2a9e959}
+\label{sec:org1a03caa}
 
 En esta segunda parte del trabajo practico, se nos presenta el problema de
 analizar un grafo dirigido ponderado con valores enteros y verificar si tiene,
@@ -340,7 +340,7 @@ pantalla los nodos que contienen a dicho ciclo. Además, se nos pide que la
 solución presentada utilice programación dinámica.
 
 \subsection{Solución con Bellman-Ford}
-\label{sec:orge47cb61}
+\label{sec:org5f72b3a}
 Para resolver el problema enunciado podemos utilizar el algoritmo Bellman-Ford
 para calcular el camino mínimo en un grafo ponderado con aristas negativas a
 partir de un nodo de origen. Lógicamente, no podría encontrarse un camino mínimo
@@ -355,7 +355,7 @@ a ver que esto puede ser utilizado para encontrar ciclos negativos.
 Primero, veamos como calcular el camino mínimo:
 
 \subsubsection{Algoritmo}
-\label{sec:org95ceee9}
+\label{sec:org2ca4ac7}
 
 Primero, se inicializa la distancia del nodo de origen \(n_s\) hasta todos los
 vértices como infinito y la distancia al nodo \(n_s\) como cero. Luego por cada
@@ -384,7 +384,7 @@ iterar una vez mas y reconstruir el ciclo negativo.
 
 \begin{enumerate}
 \item Pseudo-codigo
-\label{sec:org68874d9}
+\label{sec:orge73f3d6}
 
 \begin{minted}[bgcolor=bg]{text}
 funcion Bellman_Ford(Grafo grafo, Nodo origen)
@@ -410,7 +410,7 @@ funcion Bellman_Ford(Grafo grafo, Nodo origen)
 \end{enumerate}
 
 \subsubsection{Sub-estructura optima}
-\label{sec:org6824cee}
+\label{sec:org06bc752}
 
 Para calcular las distancias mínimas de un nodo hacia otro se utiliza la
 distancia mínima calculado anteriormente para su predecesor mas el peso de
@@ -418,22 +418,22 @@ llegar a el. Entonces la subestructura seria los caminos mínimos de todos los
 nodos predecesores al nodo final.
 
 \subsubsection{Complejidad}
-\label{sec:org89e422f}
+\label{sec:org8e802df}
 
 Podemos analizar la complejidad temporal a partir del pseudo-codigo. Primero,
 tenemos un ciclo donde inicializamos las distancias de cada vértice al origen
-como infinito. Es decir \texttt{O(V)}, donde V es la cantidad de vértices. Luego, por
+como infinito. Es decir \(O(V)\), donde V es la cantidad de vértices. Luego, por
 cada vértice sin contar el origen recorremos todas las aristas que resulta
-\texttt{O(E)}. Es decir que el ciclo entero tiene una complejidad de \texttt{O(V * E)}.
+\(O(E)~. Es decir que el ciclo entero tiene una complejidad de ~O(V * E)\).
 Finalmente, encontrar el ciclo negativo y devolverlo tiene una complejidad de
-\texttt{O(E)} porque se recorren todas las aristas una vez más.  Entonces, la
-complejidad final del algoritmo es de \texttt{O(V * E)}.
+\(O(E)\) porque se recorren todas las aristas una vez más.  Entonces, la
+complejidad final del algoritmo es de \(O(V * E)\).
 
-Y la complejidad espacial es \texttt{O(V)}. porque almacenamos dos diccionarios para
+Y la complejidad espacial es \(O(V)\). porque almacenamos dos diccionarios para
 las distancias y los predecesores que son de maximo \texttt{V}.
 
 \subsubsection{Relación de Recurrencia}
-\label{sec:org341e834}
+\label{sec:orgb8ade23}
 
 Sea \(n_s\) en nodo de inicio, \(T\) el nodo final, \(N_i\) un nodo y \(predecesores[N_i]\) es el
 conjunto de los nodos adyacentes a \(N_i\), sabemos que para llegar desde el nodo \(n_s\)
@@ -470,13 +470,13 @@ minPath(n_i, j) = min \left\{\begin{array}{lcc}
 $$
 
 \subsection{Detalles de implementación}
-\label{sec:orgde612e8}
+\label{sec:org0882954}
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
 instalado cualquier versión de \texttt{python3}.
 
 \subsubsection{Ejecución del programa}
-\label{sec:org9b25fe7}
+\label{sec:orgc63b9d2}
 
 El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
 siguiente forma:
@@ -508,7 +508,7 @@ Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 \end{minted}
 
 \subsubsection{Estructuras de datos}
-\label{sec:org60e6d2f}
+\label{sec:org19ab63e}
 
 Para la representación del grafo decidimos manteneral simple:
 \begin{itemize}
@@ -520,7 +520,7 @@ cada arista.
 \pagebreak
 
 \subsubsection{Implementación de Bellman-Ford en Python}
-\label{sec:org0307ca9}
+\label{sec:org22ad69e}
 
 Al igual que el pseudo-codigo, podemos describir la implementación de la
 siguiente manera:
@@ -556,7 +556,7 @@ y sumar los pesos de sus aristas.
 \end{enumerate}
 
 \subsubsection{Calcular ciclo negativo}
-\label{sec:orga7901d7}
+\label{sec:orgbb6cd68}
 
 A partir del algoritmo de Bellman-Ford agregamos código cuando se detecta el
 ciclo negativo que agrega el nodo que se detecto termina el ciclo negativo y se
@@ -566,7 +566,7 @@ mientras que se suman todos sus pesos en la variable \texttt{peso\_ciclo}.
 Luego devolvemos al \texttt{ciclo} reconstruido invertido y el \texttt{peso\_ciclo} calculado.
 
 \subsubsection{Complejidad de la implementación}
-\label{sec:org95950ba}
+\label{sec:org29f8920}
 
 Con la simple estructura que decidimos usar, el codigo y el pseudo-codigo tiene
 pocas diferencias, y la complejidad temporal termina siendo la misma \(O(V * E)\).
@@ -574,30 +574,47 @@ pocas diferencias, y la complejidad temporal termina siendo la misma \(O(V * E)\
 En el código de Python tenemos las siguiente operaciones:
 \begin{itemize}
 \item Inicializar las distancias en infinito que lo hacemos con un simple \texttt{for}
-sobre \texttt{grafo.vertices} por lo que la complejidad computacional es \texttt{O(V)}.
+sobre \texttt{grafo.vertices} por lo que la complejidad computacional es \(O(V)\).
 \item Luego hacemos un \texttt{for} anidado entre \texttt{grafo.vertices} (un \emph{set} de python) y
 \texttt{grafo.aristas} (un \emph{lista} de python), y como decidimos tener estructura
 simple (cuando creamos el grafo almacenamos los vértices y las aristas como
 vienen), la complejidad termina siendo la multiplicación de los dos ciclos es
-decir \texttt{O(V * E)} ya que en Python tanto iterar sobre listas o sobre sets es
-\texttt{O(n)}.
+decir \(O(V * E)\) ya que en Python tanto iterar sobre listas o sobre sets es
+\(O(n)\).
 \item Ademas, en la búsqueda de ciclos negativos hacemos uso de \texttt{grafo.peso()}, que
-por la estructura que tenemos es \texttt{O(E)} por lo que como ademas iteramos sobre
-todas las aristas esa parte queda \texttt{O(V * E)}.
+por la estructura que tenemos es \(O(E)\) por lo que como ademas iteramos sobre
+todas las aristas esa parte queda \(O(V * E)\).
 \end{itemize}
 
-Y la complejidad espacial es \texttt{O(V)} porque solo guardamos dos diccionarios de
+Y la complejidad espacial es \(O(V)\) porque solo guardamos dos diccionarios de
 largo \texttt{V}, uno con las distancias y otro con los predecesores y en caso de
 encontrar un ciclo negativo es como mucho de largo \texttt{V}, lo que en el peor de los
-casos es \texttt{O(3*V)} que es \texttt{O(V)}.
+casos es \(O(3*V)\) que es \(O(V)\).
 
 \newpage
 
 \section{Parte 3: Un poco de teoría}
-\label{sec:org0792ea6}
+\label{sec:org44ea8a2}
+
+\subsection{Algoritmos Greedy}
+\label{sec:org7d5a3e3}
+
+La estrategia Greedy consiste en dividir un problema en subproblemas que tengan
+una jerarquía entre si y cada subproblema se resuelve usando una heuristica
+llamada \emph{eleccion greedy}.
+
+Le elección greedy consiste en una selección optima local en un subproblema.
+Ademas de poder elegir una elección greedy, también debe poder tener una
+\emph{subestructura optima}, es decir, que la resolución optima de esos subproblemas me
+lleven a una solución optima en el caso general.
+
+Lo dificil de los algoritmos greedy es poder demostrar que las elecciones optimas
+en los subproblemas nos acerca realmente a una solucion optima global, como tal
+esta estrategia no nos garantiza poder encontrar soluciones optimas. Aunque la
+ventaja principal es que son fáciles de armar.
 
 \subsection{División y Conquista}
-\label{sec:org84303ed}
+\label{sec:org19adeda}
 
 La división y conquista es una técnica algorítmica que consiste en 3 elementos
 claves. El primero es, dividir el problema en N subproblemas menores pero que se
@@ -615,7 +632,7 @@ Maestro. Este ultimo teorema, no necesariamente resuelve todos los problemas de
 división y conquista pero por lo general es una herramienta muy útil.
 
 \subsection{Programacion Dinamica}
-\label{sec:org70be68c}
+\label{sec:orgacd0bd4}
 
 La programación dinámica resuelve problemas de índole de optimización. Para 
 ello, el problema tiene que tener dos características: Subestructura óptima y 
@@ -632,7 +649,7 @@ calcular los subproblemas más chicos cuyos resultados serán utilizados
 para los siguientes.
 
 \subsection{Comparación de estrategias}
-\label{sec:org791b5e3}
+\label{sec:org14bc352}
 
 No existe una mejor estrategia, algunos problemas directamente no se pueden
 plantear usando una de las tres estrategias vistas, por lo que categorizar una
@@ -643,7 +660,7 @@ que resuelva el problema, o con mejor complejidad temporal, o menor complejidad 
 como se ejemplifica en el para el siguiente problema:
 
 \subsection{El problema}
-\label{sec:org7d9bce7}
+\label{sec:orgc8a8ce8}
 
 Se trabaja sobre una matriz. El ejercicio no da mucha información acerca de la
 complejidad espacial, por lo que tenemos dar supuestos:
@@ -668,19 +685,19 @@ en ese caso debe tenerse en cuenta las características y condiciones
 del sistema donde se va a ejecutar.
 
 \subsubsection{¿Porque eligiria el Algoritmo Greedy?}
-\label{sec:org383e928}
+\label{sec:org8022f04}
 Si yo tengo poca memoria (como el caso de sistema embedidos), yo tal vez ni
 siquiera tendria la posibilidad de poder ejecutar el algoritmo con Programación
 Dinamica porque no tengo suficiente memoria para procesarlo.
 
 \subsubsection{¿Porque eligiria el de Programación Dinámica?}
-\label{sec:orgeaf1eb4}
+\label{sec:org66cac76}
 En computadoras modernas, la mayoría de los sistemas vienen con bastante memoria
 (>8GB) entonces podría despreciar el hecho de que necesito mas memoria para
 procesar el algoritmo en orden de ganar en tiempo de ejecución.
 
 \subsubsection{Conclusión}
-\label{sec:org4769eb3}
+\label{sec:orgd8dea41}
 No hay un algoritmo perfecto para todos los casos, solo hay algoritmos optimos
 para un problema. Elegir entre un algoritmo que tiene complejidad espacial
 \(O(n^2)\) y complejidad espacial \(O(n^2)\), y otro algoritmo de complejidad espacial
