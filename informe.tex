@@ -1,4 +1,4 @@
-% Created 2022-04-23 Sat 17:42
+% Created 2022-04-24 Sun 16:42
 % Intended LaTeX compiler: pdflatex
 \documentclass[titlepage,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -12,7 +12,6 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\usepackage{minted}
 \usepackage{a4wide}
 \usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true]{hyperref}
 \usepackage{bookmark}
@@ -33,9 +32,15 @@
 \renewcommand{\footrulewidth}{0.4pt}
 \usemintedstyle{stata-light}
 \newminted{c}{bgcolor={rgb}{0.95,0.95,0.95}}
-\author{Pablo Andres Dealbera}
 \date{\today}
 \title{}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.1 (Org mode 9.5.2)}, 
+ pdflang={Spanish}}
 \begin{document}
 
 \begin{titlepage}
@@ -70,10 +75,256 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 
 \section{Parte 1: Un evento exclusivo}
-\label{sec:org99e4f8b}
+\label{sec:org739ab92}
+\subsection{Resolución por Fuerza Bruta}
+\label{sec:orgf4881f2}
+
+Para cada uno de los jugadores en el ranking actual se evalúan los siguientes hasta el final del ranking. En dicha iteración se aumenta un contador cada vez que se encuentre un jugador con un ranking menor al del año pasado que el jugador que se está recorriendo actualmente. Por último, se guarda dicho contador en una lista y al finalizar las iteraciones se devuelve dicha lista.
+
+\subsubsection{Pseudocódigo}
+\label{sec:org0f6ec6a}
+
+\begin{verbatim}
+def rivales_superados(listado):
+    resultados = lista_de_igual_longitud_que(listado)
+    for jugador, indice in listado:
+	resultados[indice] = 0
+	for rival, _ in listado.slice(indice + 1):
+	    if jugador.ranking_anterior > rival.ranking_anterior:
+		resultados[indice] += 1
+    return resultados
+\end{verbatim}
+
+\subsubsection{Complejidad temporal}
+\label{sec:orgb18061b}
+
+Por cada jugador se recorren todos los siguientes, lo cual conlleva a una complejidad de \(O(n^2)\).
+
+\subsubsection{Complejidad espacial}
+\label{sec:orgc05b70b}
+
+Los resultados a devolver ocupan \(O(n)\) y el resto de las variables son constantes, consecuentemente la complejidad espacial es \(O(n)\).
+
+\subsection{Resolución por División y Conquista}
+\label{sec:org1b42cec}
+
+\subsubsection{Idea General}
+\label{sec:orgdc30f1c}
+
+La resolución planteada por división y conquista es similar al ejercicio “Contando inversiones”. En este caso la idea es partir del listado ordenado por el ranking actual, dividir el problema por la mitad de forma recursiva y luego desenrrollar la recursividad ordenando por el ranking del año pasado. Al realizar este proceso veremos los rankings que “se cruzan” lo cual permitirá aumentar el contador de los rivales superados.
+
+Como el objetivo es obtener esta cantidad en forma individual para cada jugador, haremos uso de un diccionario o lista para almacenar la información. Además, debe realizarse una ligera modificación del algoritmo para poder adaptarse a este requerimiento. La versión original se enfoca en contar la cantidad total de inversiones, lo que logra a través de acumular durante la etapa de merge los “elementos restantes por insertar” en el arreglo inferior al momento de insertar un elemento del arreglo superior (si estamos insertando uno del superior, quiere decir que todos los otros restantes del arreglo inferior deberían ir después que este, por lo que están invertidos); sin embargo, el algoritmo no discierne con cuántos otros un elemento está invertido.
+
+Por ejemplo, siguiendo el ejemplo dado en la consigna, siguiendo la ejecución se llega al merge de los arreglos [(E, 6), (D, 8)] y [(F, 5)]. El algoritmo comienza a unificarlos, pero al notar que es el elemento del segundo arreglo el de menor valor, contará todos los elementos del primer arreglo por insertar (en este caso 2) como inversiones. Sin embargo, no distingue que hubo una inversión (E, F) y otra (D, F).
+
+Para solventarlo, la modificación es sencilla: realizar el merge en sentido inverso, en orden descendente en lugar de ascendente, comenzando a unir por el final de cada arreglo en lugar del comienzo. Para el mismo ejemplo: primero comparamos D con F, como D es mayor, lo insertamos en el arreglo mezcla y, como esperábamos que fuese menor, contamos una inversión para D; continuando, comparamos E y F, y volvemos a estar frente al mismo caso; luego, solo queda insertar F. De esta manera, se siguen contando 2 inversiones, pero ahora se distingue con quiénes se dió cada una. Dependiendo de la implementación, el arreglo puede construirse insertando siempre al principio, de manera que quede ascendente, o construirlo descendente y luego invertirlo.
+
+\subsubsection{Pseudocódigo}
+\label{sec:org4f16b01}
+
+\begin{verbatim}
+funcion rivales_superados(jugadores)
+    sea superados un diccionario
+    rivales_superados_rec(jugadores, superados)
+    devolver superados
+
+funcion rivales_superados(lista, superados)
+    si | lista | <= 1:
+	devolver lista
+
+    dividir la lista en dos mitades: lista_inf, y lista_sup
+
+    lista_inf_res = rivales_superados_rec(lista_inf, superados)
+    lista_sup_res = rivales_superados_rec(lista_sup, superados)
+
+    lista_final = unir_y_contar_superados(lista_inf, lista_sup, superados)
+
+    devolver lista_final
+
+funcion unir_y_contar_superados(lista_inf, lista_sup, superados)
+    sean los índices i = |lista_inf|, j = |lista_sup|
+    sea resultado una lista vacía de largo i + j - 1
+
+    mientras 0 <= i y 0 <= j:
+	sea a = lista_inf[i]
+	sea b = lista_sup[j]
+	si lista_sup[j].ranking < lista_inf[i].ranking:
+	    resultado[i+j] = a
+	    superados[a] += 1
+	    i--
+	si no
+	    resultado[i+j] = b
+	    j--
+
+    mientras 0 <= i:
+	resultado[i+j] = lista_inf[i]
+
+    mientras 0 <= j:
+	resultado[i+j] = lista_sup[j]
+
+    devolver resultado
+\end{verbatim}
+
+\subsubsection{Complejidad temporal por Teorema Maestro}
+\label{sec:org717e075}
+
+El teorema del maestro establece que, dados \(a\) y \(b\) constantes, \(f(n)\) una función, \(T(n) = a * T(n/b) + f(n)\) una recurrencia con T(0)=cte:
+\begin{itemize}
+\item Si \(f(n) = O(n^{log_b a - e}), e > 0 \Rightarrow T(n) = \Theta(n^{log_b a})\)
+\item Si \(f(n) = \Theta(n^{log_b a}) \Rightarrow T(n) = \Theta(n^{log_b a} * log n)\)
+\item Si \(f(n) = \Omega(n^{log_b a + e}), e > 0 \Rightarrow T(n) = \Theta(f(n))\)
+\end{itemize}
+
+Para el caso, podemos establecer que \(T(n) = 2 T(n/2) + O(n)\), dado que el problema se divide en dos subproblemas de \(n/2\) elementos cada uno (contar inversiones en dos mitades de una lista) y, adicionalmente a los dos subproblemas, se realiza una iteración de los resultados para unir y ordenar las listas en una única, contando las inversiones en el proceso, lo que supone \(O(n)\) por iterarse \(n/2+n/2\) elementos.
+
+De la relación de recurrencia observamos que \(a=b=2\). Analizando caso a caso:
+\begin{itemize}
+\item \(n^{log_2 2 - e} = n^{1 - e}\). Como \(e > 0\), no se puede satisfacer que \(f(n) = n = O(n^{1-e})\), dado que \(n^{1-e} \leq n, \forall n > 0\), por lo que el caso queda descartado
+\item \(n^{log_2 2} = n\). Se satisface que \(f(n) = n = O(n)\)
+\item \(n^{log_2 2 + e} = n^{1 + e}\). Como \(e > 0\), no se puede satisfacer que \(f(n) = n = \Omega(n^{1+e})\), dado que \(n^{1+e} \geq n, \forall n > 0\), por lo que el caso queda descartado
+\end{itemize}
+
+En conclusión, por teorema maestro, la complejidad temporal es \(T(n) = \Theta(n^{log_2 2} * log n) = \Theta(n log(n))\)
+
+\subsubsection{Complejidad temporal desenrrollando la recurrencia}
+\label{sec:org00f68be}
+
+En este caso la forma de desenrollar la recurrencia es análoga a la del merge sort:
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{assets/desarrollo_concurrencia.png}
+\end{center}
+
+En el nivel 1 se realizan cn operaciones, en el segundo \(cn/2 * 2 = cn\) operaciones, en el tercero \(cn/4 * 4 = cn\) operaciones y en un nivel genérico \(j\) se realizan \(cn/2^{j-1} * 2^{j-1} = cn\) operaciones.
+
+Luego es necesario calcular la cantidad de niveles que tendrá nuestro algoritmo. Para ello utilizaremos el caso base en el cual hay problemas con solo 2 elementos, por lo tanto podemos plantear que en dicho nivel \(k\) hay \(2^k\) subproblemas que equivale a la mitad de los elementos de nuestro problema dado que utilizamos un caso base con 2 elementos. Consecuentemente, \(2^k = n/2 \Rightarrow k * log_2 2 = log_2 (n/2) \Rightarrow k = log_2 n - 1\).
+
+Finalmente, al multiplicar la cantidad de operaciones a realizar en cada nivel por la cantidad total de niveles obtenemos que la complejidad temporal es \(O(cn * (log_2 n - 1)) = O(n * log_2 n)\)
+
+\subsubsection{Complejidad espacial}
+\label{sec:org5d8acc7}
+
+La única estructura adicional al arreglo provisto como entrada del algoritmo es un diccionario/lista que contabilice la cantidad de inversiones de cada elemento. Como en el peor de los casos todos los elementos cuentan con inversiones, se considera que el arreglo puede tener hasta \(n\) elementos. La división de listas en mitades depende de la implementación del algoritmo.
+
+En conclusión, el algoritmo tiene una complejidad espacial de \(E(n) = O(n)\)
+
+\subsection{Ejemplo de funcionamiento}
+\label{sec:org7d9498b}
+
+Tomaremos como caso el ejemplo dado por la cátedra, pero realizaremos una modificación para que sean 8 jugadores en lugar de 6. De manera que la lista de entrada estará dada por las tuplas (id,ranking): A,3 | B,4 | C,2 | D,8 | E,6 | F,5 | H,7 | G,1
+
+A continuación se muestran los subproblemas a resolver. A fin de mostrar cómo se construye el diccionario de superados, se decidió seguir un orden cronológico de resolución. Dado que se comienza procesando la primer mitad de la lista, comenzaremos resolviendo la rama izquierda del árbol; el órden nos lleva al subproblema con los primeros dos elementos, y comenzaremos resolviendo el árbol desde allí.
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{assets/subproblemas.png}
+\end{center}
+
+\begin{verbatim}
+lista = A,3 | B,4
+
+lista_inf = rivales_superados_rec(A,3; superados) = A,3    # caso base
+lista_inf = rivales_superados_rec(B,4; superados) = B,4    # caso base
+
+# no hay inversiones
+lista_final = unir_y_contar(A,3 | B,4; superados) = A,3 | B,4
+
+superados = {  }
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+
+\begin{verbatim}
+lista = C,2 | D,8
+
+lista_inf = rivales_superados_rec(C,2; superados) = C,2    # caso base
+lista_sup = rivales_superados_rec(D,8; superados) = D,8  # caso base
+
+# no hay inversiones
+lista_final = unir_y_contar(C,2; D,8; superados) = C,4 | D,8
+
+superados = { }
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+
+
+\begin{verbatim}
+lista = A,3 | B,4 | C,2 | D,8
+
+lista_inf = rivales_superados_rec(A,3 | B,4; superados) = A,3 | B,4
+lista_sup = rivales_superados_rec(C,2 | D,8; superados) = C,2 | D,8
+
+# inversiones (A, C), (B, C)
+lista_final = unir_y_contar(A,3 | B,4; C,2 | D,8; superados) = C,2 | A,3 | B,4 | D,8
+
+superados = { A: 1, B: 1}
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+
+Comenzamos la resolución con la otra rama del árbol:
+
+\begin{verbatim}
+lista = E,6 | F,5
+
+lista_inf = rivales_superados_rec(E,6; superados) = E,6   # caso base
+lista_sup = rivales_superados_rec(F,5; superados) = F,5  # caso base
+
+# inversion (E, F)
+lista_final = unir_y_contar(E,6; F,5; superados) = F,5 | E,6
+
+superados = { A: 1, B: 1, E: 1}
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+\begin{verbatim}
+lista = H,7 | G,1
+
+lista_inf = rivales_superados_rec(H,7; superados) = H,7      # caso base
+lista_sup = rivales_superados_rec(G,1; superados) = G,1   # caso base
+
+# detectamos que el ranking de G es menor al de H, por lo que están invertidos
+lista_final = unir_y_contar(H,7; G,1; superados) = G,1 | H,7
+
+superados = { A: 1, B: 1, E: 1, H: 1 }
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+
+\begin{verbatim}
+lista = E,6 | F,5 | H,7 | G,1
+
+lista_inf = rivales_superados_rec(E,6 | F,5; superados) = F,5 | E,6
+lista_sup = rivales_superados_rec(H,7 | G,1; superados) = G,1 | H,7
+
+# inversiones (F, G) y (E, G)
+lista_final = unir_y_contar(F,5 | E,6; G,1 | H,7; superados) = G,1 | F,5 | E,6 | H,7
+
+superados = { A: 1, B: 1, E: 2, F: 1, H: 1 }
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+
+Finalmente unimos los subproblemas en el original:
+
+\begin{verbatim}
+lista = A,3 | B,4 | C,2 | D,8 | E,6 | F,5 | H,7 | G,1
+
+lista_inf = rivales_superados_rec(A,3 | B,4 | C,2 | D,8; superados) = C,2 | A,3 | B,4 | D,8
+lista_sup = rivales_superados_rec(E,6 | F,5 | H,7 | G,1, superados) = G,1 | F,5 | E,6 | H,7
+
+# inversiones (A, G), (B, G), (C, G), (D, G)
+lista_final = unir_y_contar(lista_inf; lista_sup; superados)
+
+superados = { A: 2, B: 2, C: 1, D: 1, E: 2, F: 1, H: 1} # resultado final
+\end{verbatim}
+
+\noindent\rule{\textwidth}{0.5pt}
+
+\newpage
 
 \section{Parte 2: Ciclos negativos}
-\label{sec:org34905c5}
+\label{sec:orgfc4290a}
 
 En esta segunda parte del trabajo practico, se nos presenta el problema de
 analizar un grafo dirigido ponderado con valores enteros y verificar si tiene,
@@ -82,7 +333,7 @@ pantalla los nodos que contienen a dicho ciclo. Además, se nos pide que la
 solución presentada utilice programación dinámica.
 
 \subsection{Solución con Bellman-Ford}
-\label{sec:org6cb066f}
+\label{sec:org77b914c}
 Para resolver el problema enunciado podemos utilizar el algoritmo Bellman-Ford
 para calcular el camino mínimo en un grafo ponderado con aristas negativas a
 partir de un nodo de origen. Lógicamente, no podría encontrarse un camino mínimo
@@ -97,7 +348,7 @@ a ver que esto puede ser utilizado para encontrar ciclos negativos.
 Primero, veamos como calcular el camino mínimo:
 
 \subsubsection{Algoritmo}
-\label{sec:orgc16128d}
+\label{sec:orge61f57c}
 
 Primero, se inicializa la distancia del nodo de origen \(n_s\) hasta todos los
 vértices como infinito y la distancia al nodo \(n_s\) como cero. Luego por cada
@@ -126,7 +377,7 @@ iterar una vez mas y reconstruir el ciclo negativo.
 
 \begin{enumerate}
 \item Pseudo-codigo
-\label{sec:org08232bc}
+\label{sec:orge57ba13}
 
 \begin{verbatim}
 funcion Bellman_Ford(Grafo grafo, Nodo origen)
@@ -134,25 +385,25 @@ funcion Bellman_Ford(Grafo grafo, Nodo origen)
     siendo predecesores un diccionario
 
     por cada vertice v del grafo:
-        distancias[v] = infinito
+	distancias[v] = infinito
 
     distancias[origen] = 0
     padres[origen] = None
 
     por cada vertice:
-        por cada arista de origen v y destino w y peso:
-            si distancias[v] + peso < distancias[w]:
-                predecesores[w] = v
-                distancias[w] = distintas[v] + peso
+	por cada arista de origen v y destino w y peso:
+	    si distancias[v] + peso < distancias[w]:
+		predecesores[w] = v
+		distancias[w] = distintas[v] + peso
 
     por cada arista de origen v y destino w y peso:
-        si distancias[v] + peso < distancias[w]:
-            tirar error "Hay un ciclo negativo"
+	si distancias[v] + peso < distancias[w]:
+	    tirar error "Hay un ciclo negativo"
 \end{verbatim}
 \end{enumerate}
 
 \subsubsection{Sub-estructura optima}
-\label{sec:org562f8a9}
+\label{sec:org4539a5f}
 
 Para calcular las distancias mínimas de un nodo hacia otro se utiliza la
 distancia mínima calculado anteriormente para su predecesor mas el peso de
@@ -160,7 +411,7 @@ llegar a el. Entonces la subestructura seria los caminos mínimos de todos los
 nodos predecesores al nodo final.
 
 \subsubsection{Complejidad}
-\label{sec:orgdab206f}
+\label{sec:org7d92977}
 
 Podemos analizar la complejidad a partir del pseudo-codigo. Primero, tenemos un
 ciclo donde inicializamos las distancias de cada vértice al origen como
@@ -172,7 +423,7 @@ tiene una complejidad de O(E) porque se recorren todas las aristas una vez más.
 Entonces, la complejidad final del algoritmo es de O(V * E).
 
 \subsubsection{Relación de Recurrencia}
-\label{sec:org209b31c}
+\label{sec:orga913c7a}
 
 Sea \(n_s\) en nodo de inicio, \(T\) el nodo final, \(N_i\) un nodo y \(predecesores[N_i]\) es el
 conjunto de los nodos adyacentes a \(N_i\), sabemos que para llegar desde el nodo \(n_s\)
@@ -209,20 +460,20 @@ minPath(n_i, j) = min \left\{\begin{array}{lcc}
 $$
 
 \subsection{Detalles de implementación}
-\label{sec:org6b3b0ad}
+\label{sec:orgdf88c7c}
 
 El algoritmo fue implementado en Python y no tiene dependencias aparte de tener
 instalado cualquier versión de \texttt{python3}.
 
 \subsubsection{Ejecución del programa}
-\label{sec:org20b1321}
+\label{sec:org842d1ab}
 
 El programa contiene un \texttt{shebang} para ser ejecutado en una terminal de la
 siguiente forma:
 
-\begin{minted}[]{bash}
+\begin{verbatim}
 ./src/parte_2.py <filename>
-\end{minted}
+\end{verbatim}
 
 El comprimido entregado incluye un archivo ejemplo en \texttt{assets/grafo.txt} con grafos ejemplos,
 por ejemplo:
@@ -238,16 +489,16 @@ E,D,-2
 A,E,3
 \end{verbatim}
 
-\begin{minted}[]{bash}
+\begin{verbatim}
 ./src/parte_2.py ./assets/grafo.txt
-\end{minted}
+\end{verbatim}
 
 \begin{verbatim}
 Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 \end{verbatim}
 
 \subsubsection{Estructuras de datos}
-\label{sec:orgad5fdd6}
+\label{sec:orgec409f6}
 
 Para la representación del grafo decidimos manteneral simple:
 \begin{itemize}
@@ -259,7 +510,7 @@ cada arista.
 \pagebreak
 
 \subsubsection{Implementación de Bellman-Ford en Python}
-\label{sec:org98c147b}
+\label{sec:orga1af3b4}
 
 Al igual que el pseudo-codigo, podemos describir la implementación de la
 siguiente manera:
@@ -295,7 +546,7 @@ y sumar los pesos de sus aristas.
 \end{enumerate}
 
 \subsubsection{Calcular ciclo negativo}
-\label{sec:orgf57bd3c}
+\label{sec:orge8df4d6}
 
 A partir del algoritmo de Bellman-Ford agregamos código cuando se detecta el
 ciclo negativo que agrega el nodo que se detecto termina el ciclo negativo y se
@@ -305,7 +556,7 @@ mientras que se suman todos sus pesos en la variable \texttt{peso\_ciclo}.
 Luego devolvemos al \texttt{ciclo} reconstruido invertido y el \texttt{peso\_ciclo} calculado.
 
 \subsubsection{Complejidad de la implementación}
-\label{sec:org71036ce}
+\label{sec:org61654f6}
 
 Con la simple estructura que decidimos usar, el codigo y el pseudo-codigo tiene
 pocas diferencias, y la complejidad termina siendo la misma \(O(V * E)\).
@@ -322,11 +573,13 @@ decir \texttt{O(V * E)} ya que en Python tanto iterar sobre listas o sobre sets 
 \texttt{O(n)}.
 \end{itemize}
 
+\newpage
+
 \section{Parte 3: Un poco de teoría}
-\label{sec:orgaa0a9cd}
+\label{sec:org3db64ec}
 
 \subsection{División y Conquista}
-\label{sec:orgfbe452a}
+\label{sec:org5b1a70c}
 
 La división y conquista es una técnica algorítmica que consiste en 3 elementos
 claves. El primero es, dividir el problema en N subproblemas menores pero que se
@@ -344,10 +597,10 @@ Maestro. Este ultimo teorema, no necesariamente resuelve todos los problemas de
 división y conquista pero por lo general es una herramienta muy útil.
 
 \subsection{Programacion Dinamica}
-\label{sec:orgb1de8fb}
+\label{sec:orgda26241}
 
 \subsection{Comparación de estrategias}
-\label{sec:org939c4a7}
+\label{sec:orgf5e9d44}
 
 No existe una mejor estrategia, algunos problemas directamente no se pueden
 plantear usando una de las tres estrategias vistas, por lo que plantear una
@@ -358,7 +611,7 @@ estrategia sobre otra por la que resuelva el problema o con mejor complejidad
 temporal o menor complejidad espacial como se explica para el siguiente problema:
 
 \subsection{El problema}
-\label{sec:org06d69ec}
+\label{sec:org92ce2af}
 
 Se trabaja sobre una matriz. El ejercicio no da mucha información acerca de la
 complejidad espacial, por lo que tenemos dar supuestos:
@@ -383,19 +636,19 @@ en ese caso vas a tener que tener en cuenta el sistema donde se va a ejecutar y
 las condiciones.
 
 \subsubsection{¿Porque eligiria el Algoritmo Greedy?}
-\label{sec:org46de3fe}
+\label{sec:org17f62a5}
 Si yo tengo poca memoria (como el caso de sistema embedidos), yo tal vez ni
 siquiera tendria la posibilidad de poder ejecutar el algoritmo con Programación
 Dinamica porque no tengo suficiente memoria para procesarlo.
 
 \subsubsection{¿Porque eligiria el de Programación Dinámica?}
-\label{sec:org03254b1}
+\label{sec:org1213c1f}
 En computadoras modernas, la mayoría de los sistemas vienen con bastante memoria
 (>8GB) entonces podría despreciar el hecho de que necesito mas memoria para
 procesar el algoritmo en orden de ganar en tiempo de ejecución.
 
 \subsubsection{Conclusión}
-\label{sec:orgb56c112}
+\label{sec:orga19eebd}
 No hay un algoritmo perfecto para todos los casos, solo hay algoritmos optimos
 para un caso de uso. Elegir entre un algoritmo que tiene complejidad espacial
 O(n\textsuperscript{2}) y complejidad espacial O(n\textsuperscript{2}) y otro algoritmo de complejidad espacial
