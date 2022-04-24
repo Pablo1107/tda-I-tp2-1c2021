@@ -21,6 +21,11 @@
 #+LATEX_HEADER: \renewcommand{\footrulewidth}{0.4pt}
 #+LATEX_HEADER: \usemintedstyle{stata-light}
 #+LATEX_HEADER: \newminted{c}{bgcolor={rgb}{0.95,0.95,0.95}}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{fancyvrb}
+#+LATEX_HEADER: \usepackage[usenames,dvipsnames]{xcolor}
+#+LATEX_HEADER: \fvset{framesep=1mm,fontfamily=courier,fontsize=\scriptsize,numbers=left,framerule=.3mm,numbersep=1mm,commandchars=\\\{\}}
 
 #+NAME: setup
 #+BEGIN_SRC emacs-lisp :results silent :exports none
@@ -75,7 +80,7 @@ Todos los años la asociación de un importante deporte individual profesional r
 
 Ejemplo:
 
-#+begin_src
+#+begin_src text
 A,3 | B,4 | C,2 | D,8 | E,6 | F,5 |
 
 A → Ranking actual 1 → superó a 1 entre los preclasificados (C)
@@ -88,7 +93,7 @@ F → Ranking actual 6 → superó a 0 entre los preclasificados (-)
 
 En este caso el problema debería retornar:
 
-#+begin_src
+#+begin_src text
 A → 1 (1)
 B → 2 (1)
 C → 3 (0)
@@ -117,7 +122,7 @@ Para cada uno de los jugadores en el ranking actual se evalúan los siguientes h
 
 *** Pseudocódigo
 
-#+begin_src
+#+begin_src text
 def rivales_superados(listado):
     resultados = lista_de_igual_longitud_que(listado)
     for jugador, indice in listado:
@@ -150,7 +155,7 @@ Para solventarlo, la modificación es sencilla: realizar el merge en sentido inv
 
 *** Pseudocódigo
 
-#+begin_src
+#+begin_src text
 funcion rivales_superados(jugadores)
     sea superados un diccionario
     rivales_superados_rec(jugadores, superados)
@@ -235,7 +240,7 @@ A continuación se muestran los subproblemas a resolver. A fin de mostrar cómo 
 
 [[file:assets/subproblemas.png]]
 
-#+begin_src
+#+begin_src text
 lista = A,3 | B,4
 
 lista_inf = rivales_superados_rec(A,3; superados) = A,3    # caso base
@@ -248,7 +253,7 @@ superados = {  }
 #+end_src
 -----
 
-#+begin_src
+#+begin_src text
 lista = C,2 | D,8
 
 lista_inf = rivales_superados_rec(C,2; superados) = C,2    # caso base
@@ -262,7 +267,7 @@ superados = { }
 -----
 
 
-#+begin_src
+#+begin_src text
 lista = A,3 | B,4 | C,2 | D,8
 
 lista_inf = rivales_superados_rec(A,3 | B,4; superados) = A,3 | B,4
@@ -277,7 +282,7 @@ superados = { A: 1, B: 1}
 
 Comenzamos la resolución con la otra rama del árbol:
 
-#+begin_src
+#+begin_src text
 lista = E,6 | F,5
 
 lista_inf = rivales_superados_rec(E,6; superados) = E,6   # caso base
@@ -289,7 +294,7 @@ lista_final = unir_y_contar(E,6; F,5; superados) = F,5 | E,6
 superados = { A: 1, B: 1, E: 1}
 #+end_src
 -----
-#+begin_src
+#+begin_src text
 lista = H,7 | G,1
 
 lista_inf = rivales_superados_rec(H,7; superados) = H,7      # caso base
@@ -302,7 +307,7 @@ superados = { A: 1, B: 1, E: 1, H: 1 }
 #+end_src
 -----
 
-#+begin_src
+#+begin_src text
 lista = E,6 | F,5 | H,7 | G,1
 
 lista_inf = rivales_superados_rec(E,6 | F,5; superados) = F,5 | E,6
@@ -317,7 +322,7 @@ superados = { A: 1, B: 1, E: 2, F: 1, H: 1 }
 
 Finalmente unimos los subproblemas en el original:
 
-#+begin_src
+#+begin_src text
 lista = A,3 | B,4 | C,2 | D,8 | E,6 | F,5 | H,7 | G,1
 
 lista_inf = rivales_superados_rec(A,3 | B,4 | C,2 | D,8; superados) = C,2 | A,3 | B,4 | D,8
@@ -360,7 +365,7 @@ El programa debe recibir por parámetro el path del archivo donde se encuentra e
 
 Ejemplo: “grafo.txt”
 
-#+begin_src
+#+begin_src text
 B
 D,A,-2
 B,A,3
@@ -422,7 +427,7 @@ iterar una vez mas y reconstruir el ciclo negativo.
 
 **** Pseudo-codigo
 
-#+begin_src
+#+begin_src text
 funcion Bellman_Ford(Grafo grafo, Nodo origen)
     siendo distancias un diccionario
     siendo predecesores un diccionario
@@ -516,7 +521,7 @@ siguiente forma:
 El comprimido entregado incluye un archivo ejemplo en ~assets/grafo.txt~ con grafos ejemplos,
 por ejemplo:
 
-#+begin_src
+#+begin_src text
 B
 D,A,-2
 B,A,3
@@ -531,7 +536,7 @@ A,E,3
 ./src/parte_2.py ./assets/grafo.txt
 #+end_src
 
-#+begin_src
+#+begin_src text
 Existen al menos un ciclo negativo en el grafo. A,E,D → costo: -1
 #+end_src
 
