@@ -621,7 +621,7 @@ casos es ~O(3*V)~ que es ~O(V)~.
 
 Pista: probablemente no haya una respuesta correcta para este problema, solo justificaciones correctas
 
-** Algoritmos Greedy :noexport:
+** Algoritmos Greedy
 
 La estrategia Greedy consiste en dividir un problema en subproblemas que tengan
 una jerarquía entre si y cada subproblema se resuelve usando una heuristica
