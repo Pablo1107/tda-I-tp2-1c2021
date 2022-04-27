@@ -176,7 +176,7 @@ funcion rivales_superados(lista, superados)
 
 funcion unir_y_contar_superados(lista_inf, lista_sup, superados)
     sean los índices i = |lista_inf|, j = |lista_sup|
-    sea resultado una lista vacía de largo i + j - 1
+    sea resultado una lista vacía de largo i + j
     
     mientras 0 <= i y 0 <= j:
         sea a = lista_inf[i]
@@ -404,13 +404,13 @@ Primero, se inicializa la distancia del nodo de origen $n_s$ hasta todos los
 vértices como infinito y la distancia al nodo $n_s$ como cero. Luego por cada
 arista se verifica si la distancia guardada para llegar al vértice de origen de
 la arista sumado al peso de la arista es menor a la guardada para llegar al
-vértice destino de la arista. Esto se repite $N – 1$ veces con $N$ el número de
+vértice destino de la arista. Esto se repite /N – 1/ veces con $N$ el número de
 nodos del grafo. De esta manera, en cada iteración $i$, el algoritmo encuentra el
-camino mínimo de longitud máxima $i$. Es por esto que el ciclo se repite $N – 1$
+camino mínimo de longitud máxima $i$. Es por esto que el ciclo se repite /N – 1/
 veces, porque el camino mínimo sin ciclos podría ser de esa longitud. Es en este
 punto donde el algoritmo nos es de utilidad. Podemos aplicar el mismo
 procedimiento una vez, es decir viendo si se puede encontrar un camino mínimo de
-longitud $N$ que sea menor al encontrado de longitud $N – 1$. Si esto sucede,
+longitud $N$ que sea menor al encontrado de longitud /N – 1/. Si esto sucede,
 implica que estamos agregando una arista negativa formando un ciclo negativo. Es
 decir, identificamos el ciclo negativo que se nos pide en el enunciado.
 
@@ -479,7 +479,7 @@ Podemos analizar la complejidad temporal a partir del pseudo-codigo. Primero,
 tenemos un ciclo donde inicializamos las distancias de cada vértice al origen
 como infinito. Es decir $O(V)$, donde V es la cantidad de vértices. Luego, por
 cada vértice sin contar el origen recorremos todas las aristas que resulta
-$O(E)~. Es decir que el ciclo entero tiene una complejidad de ~O(V * E)$.
+$O(E)$. Es decir que el ciclo entero tiene una complejidad de $O(V * E)$.
 Finalmente, encontrar el ciclo negativo y devolverlo tiene una complejidad de
 $O(E)$ porque se recorren todas las aristas una vez más.  Entonces, la
 complejidad final del algoritmo es de $O(V * E)$.
@@ -502,13 +502,13 @@ Definiendo:
  - $n_s$: nodo origen o /source node/
  - $n_i$: otro nodo distinto al origen
  - $j$: longitud máxima para llegar de $n_s$ a $n_i$
- - $minPath(n_i, j)$: función recursiva para llegar al camino mínimo de $s$ a $n_i$
+ - $minPath(n_i, j)$: función recursiva para llegar al camino mínimo de $n_s$ a $n_i$
  - $n_x$: predecesores a $n_i$
  - $k$: cantidad de predecesores a $n_i$
  - $w(n_x,n_i)$: peso de la arista $n_x$ y $n_i$
 
 $$minPath(n_s, j) = 0$$
-$$minPath(n_i, 0) = +\infty\ \text{con}\ n_i \neq S$$
+$$minPath(n_i, 0) = +\infty\ \text{con}\ n_i \neq n_s$$
 $$
 minPath(n_i, j) = min \left\{\begin{array}{lcc}
                         minPath(n_i, j-1) \\
