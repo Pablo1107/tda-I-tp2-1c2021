@@ -19,12 +19,12 @@ class Grafo():
                 return arista[2]
         return None
     
-def Bellman_Ford(grafo, origen):                         # O(V * E)
+def Bellman_Ford(grafo, origen):
     dist = {}
     predecesores = {}
 
     # Inicializar distancias en infinito
-    for v in grafo.vertices:                             # O(V)
+    for v in grafo.vertices:
         dist[v] = float("inf") 
 
     # Inicializar distancias al origen en cero y 
@@ -32,9 +32,9 @@ def Bellman_Ford(grafo, origen):                         # O(V * E)
     predecesores[origen] = None
 
     # Ejecutar por cada vertice
-    for _ in grafo.vertices:                             # O(V * E)
+    for _ in grafo.vertices:
         cambio = False
-        for v, w, peso in grafo.aristas:                 # O(E)
+        for v, w, peso in grafo.aristas:
             if dist[v] + peso < dist[w]:
                 cambio = True
                 predecesores[w] = v
@@ -47,18 +47,16 @@ def Bellman_Ford(grafo, origen):                         # O(V * E)
     # y calcular dicho ciclo y su peso
     ciclo = []
     peso_ciclo = 0
-    for v, w, peso in grafo.aristas:                     # O(V * E)
+    for v, w, peso in grafo.aristas:
         if dist[v] + peso < dist[w]:
-            ciclo.append(v)
-            arista_actual = v
             predecesor = predecesores[v]
-            peso_ciclo = grafo.peso(predecesor, arista_actual) # O(E)
+            arista_actual = v
 
-            while predecesor != v:                      # O(V * E)
+            while predecesor not in ciclo:
                 ciclo.append(predecesor)
                 arista_actual = predecesor
                 predecesor = predecesores[predecesor]
-                peso_actual = grafo.peso(predecesor, arista_actual) # O(E)
+                peso_actual = grafo.peso(predecesor, arista_actual)
                 peso_ciclo += peso_actual
 
-            return ciclo[::-1], peso_ciclo               # O(V)
+            return ciclo[::-1], peso_ciclo
