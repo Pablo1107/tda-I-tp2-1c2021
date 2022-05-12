@@ -625,7 +625,6 @@ encontrar un ciclo negativo es como mucho de largo ~V~, lo que en el peor de los
 casos es $O(3*V)$ que es $O(V)$.
 
 \newpage
-
 * Parte 3: Un poco de teoría
 
 ** Consigna :noexport:
@@ -741,3 +740,43 @@ ejecuta, el algoritmo eligiria uno sobre otro, pero la realidad es que, a menos
 que este trabajando en sistemas embebidos (o algun sistema especifico con muy
 poca memoria), es mas probable que priorice la complejidad temporal que la
 espacial.
+\pagebreak
+* Correcciones Parte 2:
+
+La parte 2 de la primera entrega tenia un loop infinito con el siguiente grafo
+que se puede encontrar en ~assets/grafo-correcion.txt~
+
+#+begin_src text
+A
+E,F,2
+A,B,1
+B,C,1
+C,D,1
+D,E,1
+D,G,1
+G,H,1
+H,B,-20
+#+end_src
+
+[[file:assets/grafo-correcion.svg]]
+
+El algoritmo anterior encontraba el nodo E con un camino mejor y desde ahi
+buscaba los predecesores hasta encontrar de nuevo al nodo E, resultando en un
+loop infinito ya que E no se encuentra en el ciclo negativo como se puede
+apreciar en la imagen.
+
+Para esto se realizo un pequeño cambio en el algoritmo de reconstruccion del
+ciclo negativo donde en vez de seguir el loop si el predecesor no es el vertice
+que se encontro, se sigue el loop si el predecesor no se repite en el ciclo
+negativo que se esta construyendo (que puede o no incluir al nodo que provoco la
+reconstruccion).
+
+Ejecutando el algoritmo con el grafo mencionado da este resultado:
+
+#+begin_src bash :results raw
+./src/parte_2.py ./assets/grafo-correcion.txt
+#+end_src
+
+#+begin_src text
+Existen al menos un ciclo negativo en el grafo. G,H,B,C,D → costo: -16
+#+end_src
