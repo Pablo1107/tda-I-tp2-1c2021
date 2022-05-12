@@ -743,6 +743,8 @@ espacial.
 \pagebreak
 * Correcciones Parte 2:
 
+** Loop Infinito
+
 La parte 2 de la primera entrega tenia un loop infinito con el siguiente grafo
 que se puede encontrar en ~assets/grafo-correcion.txt~
 
@@ -780,3 +782,17 @@ Ejecutando el algoritmo con el grafo mencionado da este resultado:
 #+begin_src text
 Existen al menos un ciclo negativo en el grafo. G,H,B,C,D → costo: -16
 #+end_src
+** No explicamos que hacemos con verificación
+
+En el informe, cuando explicamos el algoritmo, decimos:
+#+begin_quote
+Primero, se inicializa la distancia del nodo de origen $n_s$ hasta todos los
+vértices como infinito y la distancia al nodo $n_s$ como cero. Luego por cada
+arista se verifica si la distancia guardada para llegar al vértice de origen de
+la arista sumado al peso de la arista es menor a la guardada para llegar al
+vértice destino de la arista.
+#+end_quote
+
+En caso de ser menor, cambia el predecesor al actual y descarta el anterior. De
+esta manera, estamos indicando que conviene llegar al nodo por el nodo actual y
+no por el que llegábamos antes. En caso de ser mayor, no se hace nada.
