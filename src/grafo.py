@@ -47,11 +47,17 @@ def Bellman_Ford(grafo, origen):
     # y calcular dicho ciclo y su peso
     ciclo = []
     peso_ciclo = 0
+    visitados = set()
     for v, w, peso in grafo.aristas:
         if dist[v] + peso < dist[w]:
             predecesor = predecesores[v]
-            arista_actual = v
 
+            visitados.add(v)
+            while predecesor not in visitados:
+                visitados.add(predecesor)
+                predecesor = predecesores[predecesor]
+
+            arista_actual = predecesor
             while predecesor not in ciclo:
                 ciclo.append(predecesor)
                 arista_actual = predecesor

@@ -741,6 +741,7 @@ que este trabajando en sistemas embebidos (o algun sistema especifico con muy
 poca memoria), es mas probable que priorice la complejidad temporal que la
 espacial.
 \pagebreak
+
 * Correcciones Parte 1:
 La parte 1 de la primera entrega contenía un loop infinito en la función ~unir_y_contar_superados~ del pseudocódigo el cual se corrige a continuación:
 
@@ -799,9 +800,9 @@ apreciar en la imagen.
 
 Para esto se realizo un pequeño cambio en el algoritmo de reconstruccion del
 ciclo negativo donde en vez de seguir el loop si el predecesor no es el vertice
-que se encontro, se sigue el loop si el predecesor no se repite en el ciclo
-negativo que se esta construyendo (que puede o no incluir al nodo que provoco la
-reconstruccion).
+que se encontró, se itera los predecesores hasta encontrar uno que se repita y
+luego se vuelve a iterar una vez mas por los predecesores para reconstruir el
+ciclo (que puede o no incluir al nodo que provoco la reconstruccion).
 
 Ejecutando el algoritmo con el grafo mencionado da este resultado:
 
