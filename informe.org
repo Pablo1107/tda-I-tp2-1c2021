@@ -57,8 +57,8 @@
     \begin{tabular}{ | l | l | }
       \hline
       Nombre: & Grupo 1 \\ \hline
-      Entrega: & Primera \\ \hline
-      Fecha: & Miercoles 27 de Abril del 2022 \\ \hline
+      Entrega: & Segunda \\ \hline
+      Fecha: & Miercoles 25 de Mayo del 2022 \\ \hline
   	\end{tabular}
     \vfill
     \vfill
