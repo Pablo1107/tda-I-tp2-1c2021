@@ -742,7 +742,7 @@ poca memoria), es mas probable que priorice la complejidad temporal que la
 espacial.
 \pagebreak
 * Correcciones Parte 1:
-La parte 1 de la primera entrega contenía un loop infinito en la función unir_y_contar_superados del pseudocódigo el cual se corrige a continuación:
+La parte 1 de la primera entrega contenía un loop infinito en la función ~unir_y_contar_superados~ del pseudocódigo el cual se corrige a continuación:
 
 #+begin_src text
 funcion unir_y_contar_superados(lista_inf, lista_sup, superados)
