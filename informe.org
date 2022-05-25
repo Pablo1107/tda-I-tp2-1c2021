@@ -741,6 +741,36 @@ que este trabajando en sistemas embebidos (o algun sistema especifico con muy
 poca memoria), es mas probable que priorice la complejidad temporal que la
 espacial.
 \pagebreak
+* Correcciones Parte 1:
+La parte 1 de la primera entrega contenía un loop infinito en la función unir_y_contar_superados del pseudocódigo el cual se corrige a continuación:
+
+#+begin_src text
+funcion unir_y_contar_superados(lista_inf, lista_sup, superados)
+    sean los índices i = |lista_inf|, j = |lista_sup|
+    sea resultado una lista vacía de largo i + j
+    
+    mientras 0 <= i y 0 <= j:
+        sea a = lista_inf[i]
+        sea b = lista_sup[j]
+        si lista_sup[j].ranking < lista_inf[i].ranking:
+            resultado[i+j] = a
+            superados[a] += 1
+            i--
+        si no
+            resultado[i+j] = b
+            j--
+
+    mientras 0 <= i:
+        resultado[i+j] = lista_inf[i]
+	i--
+
+    mientras 0 <= j:
+        resultado[i+j] = lista_sup[j]
+	j--
+
+    devolver resultado
+#+end_src
+
 * Correcciones Parte 2:
 
 ** Loop Infinito
