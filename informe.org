@@ -827,3 +827,27 @@ vértice destino de la arista.
 En caso de ser menor, cambia el predecesor al actual y descarta el anterior. De
 esta manera, estamos indicando que conviene llegar al nodo por el nodo actual y
 no por el que llegábamos antes. En caso de ser mayor, no se hace nada.
+
+** Relación de Recurrencia
+
+Sea $n_s$ un nodo de inicio, $v$ un vertice y $predecesores[v]$ es el conjunto
+de los _nodos que tengan aristas con destino_ a $v$, sabemos que para llegar
+desde el nodo $n_s$ al nodo $v$ en una cantidad de pasos $j$ debemos haber
+llegado a alguno de sus predecesores en $j-1$ pasos.
+
+Entonces, siendo la longitud la cantidad de nodos que se recorren hasta llegar
+al nodo $v$, se deduce de lo planteado que el camino mínimo hasta el nodo
+$v$ dada una longitud máxima $L$ es el mínimo de los caminos hacia sus
+predecesores mas la longitud de llegar del predecesor a $N_i$. Por lo tanto,
+nuestra ecuación de recurrencia resulta:
+
+$$minPath(v, j) = 0\ \text{con}\ j = 0 \land v = n_s$$
+$$minPath(v, j) = +\infty\ \text{con}\ j = 0 \land v \neq n_s$$
+$$
+minPath(v, j) = min \left\{\begin{array}{lcc}
+                        minPath(v, j-1) \\
+                        min\ \left\{\begin{array}{lcc}
+                                minPath(u, j-1) + w(u,v)
+                             \end{array}\right\} & (u,v) \in E
+                      \end{array}\right\}
+$$
