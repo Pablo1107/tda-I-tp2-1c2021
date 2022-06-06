@@ -2,6 +2,10 @@
 
 Extraído del [[https://algoritmos-rw.github.io/tda/2022-1c/tp2/][Enunciado]]
 
+[[./correcion-primer-entrega.md][Correcion Primer Entrega]]
+
+[[./correcion-segunda-entrega.md][Correcion Segunda Entrega]]
+
 * Parte 1: Un evento exclusivo
 Todos los años la asociación de un importante deporte individual profesional realiza una preclasificación de los n jugadores que terminaron en las mejores posiciones del ranking para un evento exclusivo. En la tarjeta de invitación que enviarán suelen adjuntar el número de posición en la que está actualmente y a cuantos rivales superó en el ranking (únicamente entre los invitados). Contamos con un listado que tiene el nombre del jugador y la posición del ranking del año pasado. Ese listado está ordenado por el ranking actual.
 
